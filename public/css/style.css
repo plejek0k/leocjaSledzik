@@ -1,0 +1,241 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+    font-family: 'Open Sans';
+}
+
+body {
+    background-color: #111111;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    min-height: 100vh;
+    padding: .7rem;
+    font-size: 1.1rem;
+    touch-action: pan-x pan-y;
+    overflow: auto;
+}
+
+.mainApp {
+    display: flex;
+    margin: .1vh;
+}
+
+.logo {
+    margin-top: 7vh;
+    padding: 1.2rem 0 0 1rem;
+    border: 0;
+    height: 100%;
+}
+
+.logoContent {
+    position: relative;
+    min-width: 20vw;
+    margin-left: 3vw;
+    font-size: 1.1rem;
+}
+
+.logoContent img {
+    color: #dddddd;
+    height: 75px;
+    margin-bottom: .75rem;
+    position: relative;
+}
+
+.text {
+    text-align: justify;
+    color: #5E5E5E;
+    font-size: .85rem;
+}
+
+.text a {
+    color: #5E5E5E;
+}
+
+.text a:hover {
+    color: #b967e1;
+}
+
+.copyleft {
+    display:inline-block;
+    transform: rotate(180deg);
+}
+
+#app {
+    position: relative;
+    flex: 0 1 70vw;
+    padding: 0 1rem;
+    margin-top: 1.75rem;
+    color: #dddddd;
+}
+
+.start {
+    display: flex;
+    flex-direction: column;
+    margin-top: 2.5rem;
+    margin-left: 27%;
+    padding: .5rem 0rem .5rem 2.5rem;
+    border: 0;
+    border-radius: 2px;
+    max-width: 95vw;
+}
+
+.lokalizacja img {
+    width: 1.3rem;
+}
+
+.obrazek {
+    width: 40rem;
+}
+
+.headSection {
+    margin-top: 12px;
+    display: flex;
+    margin-bottom: .45rem;
+    gap: 1rem;
+}
+
+.nazwaRakiety {
+    background-color: #383838;
+    border: 1px solid #383838;
+    border-radius: 4px;
+    padding: 4px;
+}
+
+.status {
+    background-color: #4F4F4F;
+    border: 1px solid #4F4F4F;
+    color: #dddddd;
+    border-radius: 4px;
+    padding: 4px;
+}
+
+.wTrakcie {
+    background-color: #4F4F88;
+    border: 1px solid #4F4F88;
+    color: #dddddd;
+    border-radius: 4px;
+    padding: 4px;
+}
+
+.udany {
+    background-color: #4F884F;
+    border: 1px solid #4F884F;
+    color: #dddddd;
+    border-radius: 4px;
+    padding: 4px;
+}
+
+.nieUdany {
+    background-color: #884F4F;
+    border: 1px solid #884F4F;
+    color: #dddddd;
+    border-radius: 4px;
+    padding: 4px;
+}
+
+.watkiContent {
+    border-top: 4px solid #b967e1;
+    margin-top: .75rem;
+    padding-top: .75rem;
+    font-size: 1.1rem;
+    width: 20rem;
+    color: #dddddd;
+
+}
+
+.kraj {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+}
+
+.kraj a {
+    color: #dddddd;
+}
+
+.kraj a:hover {
+    color: #b967e1;
+}
+
+.watkiContent .kraj img {
+    height: 1.1rem;
+}
+
+@media screen and (max-width: 1320px) {
+    .start {
+        margin-left: 15%;
+    }
+}
+
+@media screen and (max-width: 1194px) {
+    .start {
+        margin-left: 5%;
+    }
+}
+
+@media screen and (max-width: 1112px) {
+    .start {
+        margin-left: 10%;
+    }
+
+    .obrazek {
+        width: 30rem;
+    }    
+}
+
+@media screen and (max-width: 810px) {  
+    #app {
+        padding: 0;
+        margin-top: 0;
+    }
+
+    .mainApp {
+        flex-direction: column;
+        margin: 0px;
+    }
+
+    .start {
+        margin-left: 0%;
+        padding: .5rem .5rem;
+        margin-right: 0px;
+        margin-left: 20px;
+    }
+
+    .obrazek {
+        width: 20rem;
+        justify-content: center;
+        justify-items: center;
+    }
+}
+
+@media screen and (max-width: 375px) {  
+    #app {
+        padding: 0;
+        margin-top: 0;
+    }
+
+    .logo {
+        padding: 0;
+    }
+
+    .mainApp {
+        flex-direction: column;
+    }
+
+    .start {
+        margin-left: 0%;
+        padding: 0;
+        margin-left: 1rem;
+    }
+
+    .obrazek {
+        width: 20rem;
+        justify-content: center;
+        justify-items: center;
+    }
+}
