@@ -53,7 +53,7 @@ body {
 }
 
 .text a {
-    color: #5E5E5E;
+    color: #dddddd;
 }
 
 .text a:hover {
@@ -110,6 +110,7 @@ body {
     background-color: #4F4F4F;
     border: 1px solid #4F4F4F;
     color: #dddddd;
+    font-weight: 600;
     border-radius: 4px;
     padding: 4px;
 }
@@ -118,6 +119,7 @@ body {
     background-color: #4F4F88;
     border: 1px solid #4F4F88;
     color: #dddddd;
+    font-weight: 600;
     border-radius: 4px;
     padding: 4px;
 }
@@ -126,6 +128,7 @@ body {
     background-color: #4F884F;
     border: 1px solid #4F884F;
     color: #dddddd;
+    font-weight: 600;
     border-radius: 4px;
     padding: 4px;
 }
@@ -134,18 +137,19 @@ body {
     background-color: #884F4F;
     border: 1px solid #884F4F;
     color: #dddddd;
+    font-weight: 600;
     border-radius: 4px;
     padding: 4px;
 }
 
 .watkiContent {
-    border-top: 4px solid #b967e1;
-    margin-top: .75rem;
-    padding-top: .75rem;
+    border-top: 2px solid #b967e1;
+    border-top-style: dashed;
+    margin-top: 1rem;
+    padding-top: 1.25rem;
     font-size: 1.1rem;
     width: 20rem;
     color: #dddddd;
-
 }
 
 .kraj {
@@ -164,6 +168,24 @@ body {
 
 .watkiContent .kraj img {
     height: 1.1rem;
+}
+
+.versionInfo {
+    border-top: 2px solid #b967e1;
+    border-top-style: dashed;
+    margin-top: 1.25rem;
+    padding-top: 1rem;
+    font-size: .85rem;
+    width: 20rem;
+    color: #5E5E5E;
+}
+
+.versionInfo a {
+    color: #dddddd;
+}
+
+.versionInfo a:hover {
+    color: #b967e1;
 }
 
 @media screen and (max-width: 1320px) {
@@ -185,23 +207,29 @@ body {
 
     .obrazek {
         width: 30rem;
-    }    
+    }
 }
 
-@media screen and (max-width: 810px) {  
+@media screen and (max-width: 810px) {
     #app {
         padding: 0;
         margin-top: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
     }
 
     .mainApp {
+        display: flex;
         flex-direction: column;
-        margin: 0px;
+        justify-content: center;
+        align-items: center;
     }
 
     .start {
         margin-left: 0%;
-        padding: .5rem .5rem;
+        padding: 0.5rem 0.5rem;
         margin-right: 0px;
         margin-left: 20px;
     }
@@ -213,18 +241,27 @@ body {
     }
 }
 
-@media screen and (max-width: 375px) {  
+@media screen and (max-width: 390px) {
     #app {
         padding: 0;
         margin-top: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
     }
 
     .logo {
         padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
     .mainApp {
         flex-direction: column;
+        display: flex;
+        justify-content: center;
     }
 
     .start {

@@ -15,11 +15,11 @@ function getFlagImage(countryCode) {
 
 function getStatusAbbreviation(status) {
   const statusMap = {
-    "To Be Confirmed": "Data startu do potwierdzenia",
-    "Go for Launch": "Data potwierdzona",
-    "To Be Determined": "Data startu do ustalenia",
-    "Launch Successful": "Lot udany",
-    "Launch Failure": "Lot nieudany"
+    "To Be Confirmed": "DO POTWIERDZENIA",
+    "Go for Launch": "DATA POTWIERDZONA",
+    "To Be Determined": "DO USTALENIA",
+    "Launch Successful": "SUKCES",
+    "Launch Failure": "PORAŻKA"
   };
 
   return statusMap[status] || status;
@@ -46,7 +46,7 @@ function fetchData() {
     }
   }
 
-  const url = "https://ll.thespacedevs.com/2.2.0/launch/upcoming/?limit=20";
+  const url = "https://ll.thespacedevs.com/2.2.0/launch/upcoming/?limit=10";
 
   fetch(url)
     .then((res) => res.json())
@@ -86,9 +86,9 @@ function displayLaunchData(results) {
       statusElement.textContent = `${status}`;
       statusElement.className = "status";
 
-      if (status === "Lot udany") {
+      if (status === "SUKCES") {
         statusElement.className = "udany";
-      } if (status === "Lot nieudany") {
+      } if (status === "PORAŻKA") {
         statusElement.className = "nieUdany";
       }
 
@@ -137,7 +137,7 @@ function displayLaunchData(results) {
         const timeRemaining = launchTime - now;
       
         if (timeRemaining <= 0) {
-          countdownElement.innerHTML = "W trakcie";
+          countdownElement.innerHTML = "W TRAKCIE";
           countdownElement.className = "wTrakcie";
         } if (timeRemaining < 4) {
           countdownElement.style.display = 'none';
