@@ -16,7 +16,9 @@ function translateLaunch(locationName) {
     "Jiuquan Satellite Launch Center": "Jiuquan Launch Center",
     "Xichang Satellite Launch Center": "Xichang Launch Center",
     "Taiyuan Satellite Launch Center": "Taiyuan Launch Center",
-    "Wenchang Space Launch Site": "Wenchang Launch Site"
+    "Wenchang Space Launch Site": "Wenchang Launch Site",
+    "Baikonur Cosmodrome": "Baikonur",
+    "SpaceX Space Launch Facility": "Boca Chica"
   };
   return launchPoprawka[locationName] || locationName;
 }
@@ -39,7 +41,8 @@ function poprawaMisji(missionName) {
 function skrotAgencji(agencyInfo) {
   const poprawkaAgencji = {
     "China Aerospace Science and Technology Corporation": "CASC",
-    "Indian Space Research Organization": "ISRO"
+    "Indian Space Research Organization": "ISRO",
+    "Russian Federal Space Agency (ROSCOSMOS)": "ROSCOSMOS"
   };
   return poprawkaAgencji[agencyInfo] || agencyInfo;
 }

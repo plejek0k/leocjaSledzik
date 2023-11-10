@@ -272,6 +272,14 @@ body {
   color: #fff;
 }
 
+.borderUp {
+  border-top: 1px solid #b967e1;
+  padding-top: 1.25rem;
+  font-size: 1.1rem;
+  width: 20rem;
+  color: #fff;
+}
+
 .czasDiv {
   display: flex;
   align-items: center;
@@ -430,12 +438,6 @@ body {
     align-items: center;
     margin-left: 10px;
   }
-
-  .nazwaMisji {
-    font-size: 1.5rem;
-    margin-left: 10px;
-  }
-
   .poswiata {
     margin-top: -16.5rem;
   }
@@ -487,7 +489,7 @@ body {
 
   .start {
     padding: 0;
-    margin-top: 3rem;
+    margin-top: 4rem;
   }
 }
 
@@ -563,7 +565,7 @@ body {
     display: none;
   }
 
-  #nazwaMisji {
+  .nazwaMisji {
     display: flex;
     justify-content: center;
     justify-items: center;
@@ -572,8 +574,13 @@ body {
     margin-left: 0;
   }
 
+  .poMisji {
+    padding-bottom: 0;
+  }
+
   .wynikMisji {
     font-size: 1.5rem;
+    padding-bottom: 0px;
   }
 }
 
