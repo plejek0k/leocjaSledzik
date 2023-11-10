@@ -1,6 +1,6 @@
 # leocjaSledzik
 
-A simple (and at this point a little ugly) launch schedule for all rockets 🚀
+A simple and beautiful launch schedule for all rockets 🚀
 
 ## Online version
 
