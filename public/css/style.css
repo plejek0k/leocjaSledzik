@@ -54,15 +54,11 @@ body {
 .obrazekFrame {
   width: 65vw;
   height: 14rem;
-}
-
-.poswiata {
-  display: block;
-  margin-top: -16.5rem;
-  background-color: rgba(187, 103, 225, 0.3);
-  height: 100%;
-  width: 100%;
-  border-radius: 14px;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-blend-mode: overlay;
+  background-color: rgba(187, 103, 225, 0.45);
 }
 
 .text {
@@ -301,7 +297,7 @@ body {
   align-items: center;
   justify-content: center;
   gap: 1rem;
-  margin-top: -45%;
+  margin-top: -55%;
   color: #fff;
   font-size: 2rem;
 }
@@ -400,7 +396,7 @@ body {
 
   #czasElement {
     padding: 10px;
-    margin-top: -55%;
+    margin-top: -70%;
   }
 
   .czasDiv {
@@ -438,9 +434,6 @@ body {
     align-items: center;
     margin-left: 10px;
   }
-  .poswiata {
-    margin-top: -16.5rem;
-  }
   .info {
     margin-left: 10px;
   }
@@ -465,10 +458,6 @@ body {
   .mainApp {
     margin: 0;
   }
-
-  .poswiata {
-    margin-top: -16.5rem;
-  }
 }
 
 @media screen and (max-width: 1080px) {
@@ -489,7 +478,8 @@ body {
 
   .start {
     padding: 0;
-    margin-top: 4rem;
+    margin-top: 5rem;
+    margin-bottom: 5rem;
   }
 }
 
@@ -545,10 +535,6 @@ body {
     height: 28vh;
   }
 
-  .poswiata {
-    margin-top: -31.6vh;
-  }
-
   .nazwaRakiety {
     margin-top: -3rem;
   }
@@ -582,14 +568,18 @@ body {
     font-size: 1.5rem;
     padding-bottom: 0px;
   }
+  #czasElement {
+    margin-top: -67%;
+  }
 }
 
-@media screen and (max-width: 375px) {
+@media screen and (max-width: 420px) {
     #nazwaMisji {
         font-size: 1.8rem;
+        padding-bottom: 8rem;
     }
 
-    .poswiata {
-        margin-top: -31.9vh;
+    #czasElement {
+      margin-top: -67%;
     }
 }

@@ -72,13 +72,13 @@ function fetchData() {
   const url = "https://ll.thespacedevs.com/2.2.0/launch/upcoming/?limit=10";
 
   fetch(url)
-    .then((res) => res.json())
-    .then((data) => {
-      localStorage.setItem("cachedData", JSON.stringify(data));
-      localStorage.setItem("cachedTimestamp", new Date().getTime());
+  .then((res) => res.json())
+  .then((data) => {
+    localStorage.setItem("cachedData", JSON.stringify(data));
+    localStorage.setItem("cachedTimestamp", new Date().getTime());
 
-      displayLaunchData(data.results);
-    });
+    displayLaunchData(data.results);
+  });
 }
 
 function displayLaunchData(results) {
@@ -140,9 +140,6 @@ function displayLaunchData(results) {
       const countdownElement = document.createElement("div");
       countdownElement.id = `countdown-${result.id}`;
 
-      const poswiata = document.createElement("div");
-      poswiata.className = "poswiata";
-
       const info = document.createElement("div");
       info.className = "info";
 
@@ -172,7 +169,6 @@ function displayLaunchData(results) {
       info.appendChild(locationElement);
       info2.appendChild(orbitInfoElement);
       info2.appendChild(agencyInfoElement);
-      dupaElement.appendChild(poswiata);
 
 
       if (result.image) {
