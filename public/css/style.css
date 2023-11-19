@@ -25,12 +25,12 @@ body {
   font-family: "Open Sans";
 }
 
-.mainApp {
+#mainApp {
   display: flex;
   margin: 0.1vh;
 }
 
-.logo {
+#logo {
   margin-top: 7vh;
   padding: 1.2rem 0 0 1rem;
   border: 0;
@@ -62,7 +62,7 @@ body {
 }
 
 .text {
-  text-align: justify;
+  text-align: left;
   color: #5e5e5e;
   font-size: 0.85rem;
 }
@@ -73,6 +73,7 @@ body {
 
 .text a:hover {
   color: #b967e1;
+  transition: 0.25s;
 }
 
 .copyleft {
@@ -270,10 +271,39 @@ body {
 
 .borderUp {
   border-top: 1px solid #b967e1;
-  padding-top: 1.25rem;
+  padding-top: 1rem;
   font-size: 1.1rem;
   width: 20rem;
   color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.borderDown {
+  border-top: 1px solid #b967e1;
+  padding-top: 1rem;
+  margin-top: 1rem;
+  font-size: 1.1rem;
+  width: 20rem;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.borderUp a {
+  color: #fff;
+  font-size: 1rem;
+  text-align: center;
+  font-weight: 400;
+}
+
+.borderUp a:hover {
+  color: #b967e1;
+  transition: 0.25s;
 }
 
 .czasDiv {
@@ -348,6 +378,7 @@ body {
 }
 
 .kraj a:hover {
+  transition: 0.25s;
   opacity: 60%;
 }
 
@@ -376,6 +407,41 @@ body {
 
 .versionInfo a:hover {
   color: #b967e1;
+  transition: 0.25s;
+}
+
+.appContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.appYoutube {
+  display: grid;
+  grid-auto-flow: column;
+  grid-gap: 0;
+  column-gap: 0%;
+  grid-template-rows: 18.5rem 18.5rem 18.5rem;
+  grid-template-columns: 28.5rem 28.5rem;
+}
+
+.video {
+  padding: 1rem;
+}
+
+.video p {
+  color: #5e5e5e;
+  font-size: 1rem;
+}
+
+iframe {
+  border-radius: 12px;
+  padding: 2px;
+  height: 40vh;
+  width: 100vw;
+  max-width: 454px;
+  max-height: 254px;
 }
 
 @media screen and (max-width: 1600px) {
@@ -437,6 +503,21 @@ body {
   .info {
     margin-left: 10px;
   }
+  .appYoutube {
+    display: grid;
+    grid-auto-flow: column;
+    grid-gap: 0;
+    column-gap: 10%;
+    grid-template-rows: 18.5rem 18.5rem 18.5rem 18.5rem;
+    grid-template-columns: 28.5rem 28.5rem;
+  }
+  .appContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-left: 7rem;
+  }
 }
 
 @media screen and (max-width: 1210px) {
@@ -455,13 +536,28 @@ body {
     padding: 0.5rem 0rem 0.5rem 1.5rem;
   }
 
-  .mainApp {
+  #mainApp {
     margin: 0;
+  }
+  .appYoutube {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+  }
+  .appContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-left: 0;
+    width: 100%;
   }
 }
 
 @media screen and (max-width: 1080px) {
-  .mainApp {
+  #mainApp {
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -581,5 +677,14 @@ body {
 
     #czasElement {
       margin-top: -67%;
+    }
+
+    iframe {
+      border-radius: 12px;
+      padding: 2px;
+      height: 40vh;
+      width: 90vw;
+      max-width: 454px;
+      max-height: 254px;
     }
 }

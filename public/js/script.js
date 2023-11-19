@@ -3,6 +3,7 @@ function getStatusAbbreviation(status) {
     "To Be Confirmed": "DO POTWIERDZENIA",
     "Go for Launch": "DATA POTWIERDZONA",
     "To Be Determined": "DO USTALENIA",
+    "Launch was a Partial Failure": "CZĘŚCIOWA PORAŻKA",
     "Launch Successful": "SUKCES",
     "Launch Failure": "PORAŻKA"
   };
@@ -98,7 +99,8 @@ function displayLaunchData(results) {
 
       const rocketName = result.rocket.configuration.name;
 
-      const missionName = poprawaMisji(result.mission.name.replace(/\(([^)]+)\)/g, ''));
+      const missionName = poprawaMisji(result.mission.name.replace(/\(([^)]+)\)/g,''));
+      
 
       const rocketNameElement = document.createElement("p");
       rocketNameElement.textContent = `${rocketName}`;
