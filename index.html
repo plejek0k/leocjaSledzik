@@ -6,7 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="./public/img/icon.png" type="image/x-icon">
     <link rel="stylesheet" href="./public/css/style.css">
+    <meta property="og:title" content="Śledzik - Twoje RAKIETOWE miejsce w MIKRONACJACH!">
+    <meta property="og:description" content="Śledzik to bardzo PROSTY w obsłudze harmonogram najbliższych lotów KOSMICZNYCH!">
     <title>Śledzik - Twoje RAKIETOWE miejsce w MIKRO!</title>
+    <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
+    <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.min.js"></script>
+    <script src="https://unpkg.com/tippy.js@6/dist/tippy-bundle.umd.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
 </head>
 
 <body>
@@ -20,18 +27,20 @@
                 
                 <div class="watkiContent">
                     <div class="kraj">
-                        <a href="https://forum.leocja.org/viewtopic.php?f=10&t=1352"><img src="./public/img/Mikro/LEO.webp"></a>
-                        <a href="https://edelweiss.org.pl/viewtopic.php?f=45&t=903"><img src="./public/img/Mikro/EDE.webp"></a>
-                        <a href="https://forum.voxland.org.pl/viewtopic.php?t=516"><img src="./public/img/Mikro/VOX.webp"></a>
+                        <a href="https://forum.leocja.org/viewtopic.php?f=10&t=1352"><img id="leocja" src="./public/img/Mikro/LEO.webp"></a>
+                        <a href="https://edelweiss.org.pl/viewtopic.php?f=45&t=903"><img id="edel" src="./public/img/Mikro/EDE.webp"></a>
+                        <a href="https://forum.voxland.org.pl/viewtopic.php?t=516"><img id="vox" src="./public/img/Mikro/VOX.webp"></a>
                     </div>
                 </div>
                 <div class="borderUp">
-                    <a href="boca-chica-na-zywo">BOCA CHICA NA ŻYWO</a>
+                    <a href="https://multistream.whataboutit.space/"><i id="raz" class="las la-camera"></i></a>
+                    <i id="dwa" class="las la-clipboard-list"></i>
                 </div>
         </aside>
 
         <div id="app"></div>
         <script src="./public/js/script.js"></script>
+        <script src="./public/js/mainTooltips.js"></script>
     </main>
 </body>
 

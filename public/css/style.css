@@ -59,6 +59,7 @@ body {
   background-repeat: no-repeat;
   background-blend-mode: overlay;
   background-color: rgba(187, 103, 225, 0.45);
+  box-shadow: 0px 0px 50px 0px rgba(255, 255, 255, 0.1);
 }
 
 .text {
@@ -272,38 +273,24 @@ body {
 .borderUp {
   border-top: 1px solid #b967e1;
   padding-top: 1rem;
-  font-size: 1.1rem;
+  font-size: 1.75rem;
   width: 20rem;
-  color: #fff;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: center;
   align-items: center;
 }
 
-.borderDown {
-  border-top: 1px solid #b967e1;
-  padding-top: 1rem;
-  margin-top: 1rem;
-  font-size: 1.1rem;
-  width: 20rem;
+.borderUp i {
   color: #fff;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
 }
 
-.borderUp a {
-  color: #fff;
-  font-size: 1rem;
-  text-align: center;
-  font-weight: 400;
-}
-
-.borderUp a:hover {
+.borderUp i:hover {
   color: #b967e1;
   transition: 0.25s;
+  cursor: pointer;
 }
 
 .czasDiv {
@@ -410,40 +397,6 @@ body {
   transition: 0.25s;
 }
 
-.appContainer {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.appYoutube {
-  display: grid;
-  grid-auto-flow: column;
-  grid-gap: 0;
-  column-gap: 0%;
-  grid-template-rows: 18.5rem 18.5rem 18.5rem;
-  grid-template-columns: 28.5rem 28.5rem;
-}
-
-.video {
-  padding: 1rem;
-}
-
-.video p {
-  color: #5e5e5e;
-  font-size: 1rem;
-}
-
-iframe {
-  border-radius: 12px;
-  padding: 2px;
-  height: 40vh;
-  width: 100vw;
-  max-width: 454px;
-  max-height: 254px;
-}
-
 @media screen and (max-width: 1600px) {
   .logoContent {
     margin-left: 0;
@@ -503,21 +456,6 @@ iframe {
   .info {
     margin-left: 10px;
   }
-  .appYoutube {
-    display: grid;
-    grid-auto-flow: column;
-    grid-gap: 0;
-    column-gap: 10%;
-    grid-template-rows: 18.5rem 18.5rem 18.5rem 18.5rem;
-    grid-template-columns: 28.5rem 28.5rem;
-  }
-  .appContainer {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin-left: 7rem;
-  }
 }
 
 @media screen and (max-width: 1210px) {
@@ -538,21 +476,6 @@ iframe {
 
   #mainApp {
     margin: 0;
-  }
-  .appYoutube {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    align-content: center;
-  }
-  .appContainer {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin-left: 0;
-    width: 100%;
   }
 }
 
@@ -677,14 +600,5 @@ iframe {
 
     #czasElement {
       margin-top: -67%;
-    }
-
-    iframe {
-      border-radius: 12px;
-      padding: 2px;
-      height: 40vh;
-      width: 90vw;
-      max-width: 454px;
-      max-height: 254px;
     }
 }
