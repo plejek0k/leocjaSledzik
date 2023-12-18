@@ -6,6 +6,7 @@ function getStatusAbbreviation(status) {
     "Launch was a Partial Failure": "CZĘŚCIOWA PORAŻKA",
     "Launch Successful": "SUKCES",
     "Launch Failure": "PORAŻKA",
+    "On Hold": "WSTRZYMANO",
   };
 
   return statusMap[status] || status;
@@ -20,6 +21,7 @@ function translateLaunch(locationName) {
     "Wenchang Space Launch Site": "Wenchang Launch Site",
     "Baikonur Cosmodrome": "Baikonur",
     "SpaceX Space Launch Facility": "Boca Chica",
+    "Satish Dhawan Space Centre": "Sriharikota Range",
   };
   return launchPoprawka[locationName] || locationName;
 }
@@ -29,13 +31,14 @@ function poprawaMisji(missionName) {
     "Unknown Payload": "Ładunek nieznany",
   };
 
+  const missionWithoutFLTA = missionName.replace(/FLTA\d+\s*/, '');
   const regex = /Dragon CRS-2 SpX-(\d+)/;
-  const match = missionName.match(regex);
+  const match = missionWithoutFLTA.match(regex);
 
   if (match) {
     return "CRS-" + match[1];
   } else {
-    return misjaPoprawka[missionName] || missionName;
+    return misjaPoprawka[missionName] || missionWithoutFLTA;
   }
 }
 
@@ -52,7 +55,8 @@ function brakOrbity(orbitInfo) {
   const brakOrbityPoprawka = {
     "N/A": "BRAK INFORMACJI",
     "Sub": "LOT SUBORBITALNY",
-    "Elliptical": "ELIPTYCZNA"
+    "Elliptical": "ELIPTYCZNA",
+    "PO": "POLARNA",
   };
   return brakOrbityPoprawka[orbitInfo] || orbitInfo;
 }
@@ -117,15 +121,16 @@ function displayLaunchData(results) {
       
       function getTooltipContentForRocket(rocketName) {
         const tooltipRocket = {
-          "Falcon 9": "Rakieta wielokrotnego użytku wyprodukowana firmę SpaceX będąca pierwszą komercyjną rakietą, która wyniosła człowieka na orbitę i obecnie jest jedyną amerykańską rakietą, która może to zrobić",
-          "Long March 5": "Chińska ciężka rakieta nośna opracowana przez Chińską Akademię Technologii Pojazdów Startowych, będąca najpotężniejszą rakietą z rodziny rakiet Long March",
-          "Hyperbola-1": "Chińska rakieta składająca się z czterech stopni, które są zasilane wyłącznie paliwem stałym, bazująca na pociskach balistycznych DF-11 lub DF-15",
-          "Electron": "Nowozelandzka dwustopniowa rakieta opracowana przez firmę Rocket Lab będąca pierwszą rakietą zasilaną przez silnik z pompą elektryczną",
-          "Soyuz 2.1b/Fregat-M": "Zmodernizowana wersja radzieckiej trzystopniowej rakiety Sojuz z silnikiem RD-0124, ze zwiększoną ładownością do 8,2 ton",
-          "New Shepard": "Suborbitalna rakieta wielokrotnego użytku opracowany z myślą o turystyce kosmicznej przez firmę Blue Origin, nazwany na cześć Alana Sheparda, który jako pierwszy Amerykanin poleciał w kosmos",
-          "Falcon Heavy": "Superciężka rakieta nośna, która została zaprojektowana przez amerykańską firmę SpaceX",
-          "PSLV-DL": "Jeden z wariantów indyjskiej rakiety PSLV, który ma tylko dwa boostery i jest w stanie wystrzelić ładunek na orbitę synchroniczną ze Słońcem",
-          "Long March 2": "Rakieta nośna obsługiwana przez Chińską Republikę Ludową, przy czym sam rozwój rakiety odbywa się dzięki Chińskiej Akademii Technologii Pojazdów Startowych"
+          "Falcon 9": "<center>Rakieta wielokrotnego użytku wyprodukowana firmę SpaceX będąca pierwszą komercyjną rakietą, która wyniosła człowieka na orbitę i obecnie jest jedyną amerykańską rakietą, która może to zrobić</center>",
+          "Long March 5": "<center>Chińska ciężka rakieta nośna opracowana przez Chińską Akademię Technologii Pojazdów Startowych, będąca najpotężniejszą rakietą z rodziny rakiet Long March</center>",
+          "Hyperbola-1": "<center>Chińska rakieta składająca się z czterech stopni, które są zasilane wyłącznie paliwem stałym, bazująca na pociskach balistycznych DF-11 lub DF-15</center>",
+          "Electron": "<center>Nowozelandzka dwustopniowa rakieta opracowana przez firmę Rocket Lab będąca pierwszą rakietą zasilaną przez silnik z pompą elektryczną</center>",
+          "Soyuz 2.1b/Fregat-M": "<center>Zmodernizowana wersja radzieckiej trzystopniowej rakiety Sojuz z silnikiem RD-0124, ze zwiększoną ładownością do 8,2 ton</center>",
+          "New Shepard": "<center>Suborbitalna rakieta wielokrotnego użytku opracowany z myślą o turystyce kosmicznej przez firmę Blue Origin, nazwany na cześć Alana Sheparda, który jako pierwszy Amerykanin poleciał w kosmos</center>",
+          "Falcon Heavy": "<center>Superciężka rakieta nośna, która została zaprojektowana przez amerykańską firmę SpaceX</center>",
+          "PSLV-DL": "<center>Jeden z wariantów indyjskiej rakiety PSLV, który ma tylko dwa boostery i jest w stanie wystrzelić ładunek na orbitę synchroniczną ze Słońcem</center>",
+          "Long March 2": "<center>Rakieta nośna obsługiwana przez Chińską Republikę Ludową, przy czym sam rozwój rakiety odbywa się dzięki Chińskiej Akademii Technologii Pojazdów Startowych</center>",
+          "Firefly Alpha": "<center>Dwustopniowy pojazd nośny opracowany przez amerykańską firmę Firefly Aerospace</center>",
         };
         return tooltipRocket[rocketName] || "Oops... Chyba nie ustawiłem tutaj opisu";
       }
@@ -157,6 +162,9 @@ function displayLaunchData(results) {
       if (statusElement.innerHTML === "DATA POTWIERDZONA") {
         statusElement.className = "potwierdzone";
       }
+      if (statusElement.innerHTML === "WSTRZYMANO") {
+        statusElement.className = "doUstalenia";
+      }
 
       const locationName = translateLaunch(
         result.pad.location.name.split(",")[0]
@@ -178,6 +186,25 @@ function displayLaunchData(results) {
       const orbitInfoElement = document.createElement("p");
       orbitInfoElement.textContent = `${orbitInfo}`;
       orbitInfoElement.className = "orbitInfo";
+      orbitInfoElement.dataset.tippyContent = getTooltipContentForOrbit(orbitInfo);
+
+      tippy(orbitInfoElement, {
+        content: orbitInfoElement.dataset.tippyContent,
+        placement: "top",
+        allowHTML: true
+      });
+      
+      function getTooltipContentForOrbit(orbitInfo) {
+        const tooltipOrbit = {
+          "LEO": "<center>Czyli taka, która nie przekracza wysokości 2000 kilometrów nad powierzchnią Ziemii</center>",
+          "POLARNA": "<center>Orbita polarna, czyli taka gdzie satelita przelatuje nad obydwoma biegunami Ziemi gdzie jej nachylenie jest w granicach od 60 do 90 stopni</center>",
+          "LOT SUBORBITALNY": "<center>To taki lot, podczas którego dociera do przestrzeni kosmicznej, ale trajektoria lotu nie pozwala na wejście na orbitę</center>",
+          "ELIPTYCZNA": "<center>Orbita eliptyczna to orbita kołowa z mimośrodem (parametr o ile jakaś orbita odbiega od idealnego koła), który jest równy 1</center>",
+          "GTO": "<center>Orbita geosynchroniczna to orbita z okresem orbitalnym odpowiadającym obrotowi Ziemi, który wokół własnej osi wynoszącym 1 dzień gwiezdny</center>",
+        };
+        return tooltipOrbit[orbitInfo] || "Oops... Chyba nie ustawiłem tutaj opisu";
+      }
+
 
       const agencyInfo = skrotAgencji(result.launch_service_provider.name);
       const agencyInfoElement = document.createElement("p");
@@ -193,13 +220,14 @@ function displayLaunchData(results) {
       
       function getTooltipContentForAgency(agencyInfo) {
         const tooltipAgency = {
-          "SpaceX": "Amerykańska firma świadcząca usługi transportu kosmicznego, która została założona w 2002 roku przez Elona Muska w celu obniżenia kosztów transportu kosmicznego",
-          "iSpace": "Założona w październiku 2016 roku chińska prywatna firma zajmująca się rozwojem i wystrzeliwaniem rakiet w przestrzeń kosmiczną",
-          "ROSCOSMOS": "Rządowa agencja odpowiedzialną za program kosmiczny Federacji Rosyjskiej i ogólne rosyjskie badania lotnicze",
-          "Blue Origin": "Amerykański prywatny producent lotniczy i firma świadcząca usługi lotów kosmicznych, która została założona przez Jeffa Bezosa",
-          "ISRO": "Indyjska agencją kosmiczna, której główną wizją jest wykorzystywanie technologii kosmicznej do rozwoju Indii przy jednoczesnym prowadzeniu badań naukowych",
-          "CASC": "Główny wykonawca chińskiego programu kosmicznego, który został oficjalnie powołany w lipcu 1999 roku przez rząd Chińskiej Republiki Ludowej",
-          "Rocket Lab": "Amerykańska firma z branży lotniczej i kosmicznej, która posiada spółkę zależną w Nowej Zelandii, która opracowuje komercyjne rakiety nośne",
+          "SpaceX": "<center>Amerykańska firma świadcząca usługi transportu kosmicznego, która została założona w 2002 roku przez Elona Muska w celu obniżenia kosztów transportu kosmicznego</center>",
+          "iSpace": "<center>Założona w październiku 2016 roku chińska prywatna firma zajmująca się rozwojem i wystrzeliwaniem rakiet w przestrzeń kosmiczną</center>",
+          "ROSCOSMOS": "<center>Rządowa agencja odpowiedzialną za program kosmiczny Federacji Rosyjskiej i ogólne rosyjskie badania lotnicze</center>",
+          "Blue Origin": "<center>Amerykański prywatny producent lotniczy i firma świadcząca usługi lotów kosmicznych, która została założona przez Jeffa Bezosa</center>",
+          "ISRO": "<center>Indyjska agencją kosmiczna, której główną wizją jest wykorzystywanie technologii kosmicznej do rozwoju Indii przy jednoczesnym prowadzeniu badań naukowych</center>",
+          "CASC": "<center>Główny wykonawca chińskiego programu kosmicznego, który został oficjalnie powołany w lipcu 1999 roku przez rząd Chińskiej Republiki Ludowej</center>",
+          "Rocket Lab": "<center>Amerykańska firma z branży lotniczej i kosmicznej, która posiada spółkę zależną w Nowej Zelandii, która opracowuje komercyjne rakiety nośne</center>",
+          "Firefly Aerospace": "<center>Amerykańska firma z branży kosmicznej, która opracowuje rakiety nośne do komercyjnych lotów w kosmos</center>",
         };
         return tooltipAgency[agencyInfo] || "Oops... Chyba nie ustawiłem tutaj opisu";
       }
@@ -216,10 +244,11 @@ function displayLaunchData(results) {
       
       function getTooltipContentForResult(statusElement) {
         const tooltipResult = {
-          "SUKCES": "Pomyślnie wyniesiono ładunek na docelową orbitę",
-          "DATA POTWIERDZONA": "Data została potwierdzona przez oficjalne źródła",
-          "DO POTWIERDZENIA": "Oczekiwanie na oficjalne potwierdzenie daty, która jest mniej więcej znana",
-          "DO USTALENIA": "Data jest bardzo przybliżona i jest oparta na niewiarygodnych źródłach"
+          "SUKCES": "<center>Pomyślnie wyniesiono ładunek na docelową orbitę</center>",
+          "DATA POTWIERDZONA": "<center>Data została potwierdzona przez oficjalne źródła</center>",
+          "DO POTWIERDZENIA": "<center>Oczekiwanie na oficjalne potwierdzenie daty, która jest mniej więcej znana</center>",
+          "DO USTALENIA": "<center>Data jest bardzo przybliżona i jest oparta na niewiarygodnych źródłach</center>",
+          "WSTRZYMANO": "<center>Odliczanie zostało wstrzymane, a start może nastąpić w przewidzianym oknie startowym</center>"
         };
         return tooltipResult[statusElement] || "Oops... Chyba nie ustawiłem tutaj opisu";
       }
