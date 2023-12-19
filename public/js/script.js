@@ -47,6 +47,7 @@ function skrotAgencji(agencyInfo) {
     "China Aerospace Science and Technology Corporation": "CASC",
     "Indian Space Research Organization": "ISRO",
     "Russian Federal Space Agency (ROSCOSMOS)": "ROSCOSMOS",
+    "Russian Space Forces": "Rosyjskie Siły Kosmiczne"
   };
   return poprawkaAgencji[agencyInfo] || agencyInfo;
 }
@@ -131,6 +132,8 @@ function displayLaunchData(results) {
           "PSLV-DL": "<center>Jeden z wariantów indyjskiej rakiety PSLV, który ma tylko dwa boostery i jest w stanie wystrzelić ładunek na orbitę synchroniczną ze Słońcem</center>",
           "Long March 2": "<center>Rakieta nośna obsługiwana przez Chińską Republikę Ludową, przy czym sam rozwój rakiety odbywa się dzięki Chińskiej Akademii Technologii Pojazdów Startowych</center>",
           "Firefly Alpha": "<center>Dwustopniowy pojazd nośny opracowany przez amerykańską firmę Firefly Aerospace</center>",
+          "Soyuz 2.1a": "<center>Zmodernizowana wersja radzieckiej trzystopniowej rakiety Sojuz, która przeszła z analogowego systemu sterowania na cyfrowy</center>",
+          "Soyuz 2-1v": "<center>Zmodernizowana wersja radzieckiej trzystopniowej rakiety Sojuz bez bocznych boosterów</center>",
         };
         return tooltipRocket[rocketName] || "Oops... Chyba nie ustawiłem tutaj opisu";
       }
@@ -201,6 +204,7 @@ function displayLaunchData(results) {
           "LOT SUBORBITALNY": "<center>To taki lot, podczas którego dociera do przestrzeni kosmicznej, ale trajektoria lotu nie pozwala na wejście na orbitę</center>",
           "ELIPTYCZNA": "<center>Orbita eliptyczna to orbita kołowa z mimośrodem (parametr o ile jakaś orbita odbiega od idealnego koła), który jest równy 1</center>",
           "GTO": "<center>Orbita geosynchroniczna to orbita z okresem orbitalnym odpowiadającym obrotowi Ziemi, który wokół własnej osi wynoszącym 1 dzień gwiezdny</center>",
+          "SSO": "<center>Orbita, która, po której satelita poprzedzająca każdego roku jeden pełny obrót wokół Słońca</center>",
         };
         return tooltipOrbit[orbitInfo] || "Oops... Chyba nie ustawiłem tutaj opisu";
       }
@@ -228,6 +232,7 @@ function displayLaunchData(results) {
           "CASC": "<center>Główny wykonawca chińskiego programu kosmicznego, który został oficjalnie powołany w lipcu 1999 roku przez rząd Chińskiej Republiki Ludowej</center>",
           "Rocket Lab": "<center>Amerykańska firma z branży lotniczej i kosmicznej, która posiada spółkę zależną w Nowej Zelandii, która opracowuje komercyjne rakiety nośne</center>",
           "Firefly Aerospace": "<center>Amerykańska firma z branży kosmicznej, która opracowuje rakiety nośne do komercyjnych lotów w kosmos</center>",
+          "Rosyjskie Siły Kosmiczne": "<center>Wojsko federacji rosyjskiej, których zadaniami jest obrona antybalistyczna kraju oraz budowa i kontrola nad satelitami o znaczeniu militarnym</center>",
         };
         return tooltipAgency[agencyInfo] || "Oops... Chyba nie ustawiłem tutaj opisu";
       }
