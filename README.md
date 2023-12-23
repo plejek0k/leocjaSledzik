@@ -18,7 +18,7 @@ created with ❤️ for the Polish virtual state the [Palatinate of Leocia](http
 
 ### Śledzik on the web
 
-The application should virtually always be available at https://sledzik.leocja.org/
+The application should virtually always be available at [sledzik.leocja.org](https://sledzik.leocja.org/)
 
 ### Tech stack
 
