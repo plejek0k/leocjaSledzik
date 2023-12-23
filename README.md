@@ -1,7 +1,32 @@
-# leocjaSledzik
+# Śledzik
 
-A simple and beautiful launch schedule for all rockets 🚀
+A simple and beautiful launch schedule for all amazing rockets 🚀\
+created with ❤️ for the Polish virtual state the [Palatinate of Leocia](https://leocja.org)
 
-## Online version
+### Features
+
+📱 responsiveness (appearance to be improved)\
+👁️ tooltips\
+🎨 pleasing UI design
+
+### Features I am working on
+
+🧠 knowledge bases\
+🌐 adding Esperanto and English\
+🌌 space events from the API\
+🫳 drop-down lists with launch details
+
+### Śledzik on the web
 
 The application should virtually always be available at https://sledzik.leocja.org/
+
+### Tech stack
+
+🚀 [launch library 2](https://thespacedevs.com/llapi) - main API from which I take information about the launches\
+📝 [tippy.js](https://github.com/atomiks/tippyjs) - tooltips\
+🔔 [line-awesome](https://icons8.com/line-awesome) - icon library\
+💻 Vanilla JS\
+🤓 Vanilla CSS (in the future SCSS)
+
+### License
+[GPL-2.0](https://www.gnu.org/licenses/old-licenses/lgpl-2.0.html#SEC1)
