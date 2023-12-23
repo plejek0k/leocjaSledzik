@@ -122,7 +122,7 @@ function displayLaunchData(results) {
       
       function getTooltipContentForRocket(rocketName) {
         const tooltipRocket = {
-          "Falcon 9": "<center>Rakieta wielokrotnego użytku wyprodukowana firmę SpaceX będąca pierwszą komercyjną rakietą, która wyniosła człowieka na orbitę i obecnie jest jedyną amerykańską rakietą, która może to zrobić</center>",
+          "Falcon 9": "<center>Rakieta wielokrotnego użytku wyprodukowana przez firmę SpaceX będąca pierwszą komercyjną rakietą, która wyniosła człowieka na orbitę</center>",
           "Long March 5": "<center>Chińska ciężka rakieta nośna opracowana przez Chińską Akademię Technologii Pojazdów Startowych, będąca najpotężniejszą rakietą z rodziny rakiet Long March</center>",
           "Hyperbola-1": "<center>Chińska rakieta składająca się z czterech stopni, które są zasilane wyłącznie paliwem stałym, bazująca na pociskach balistycznych DF-11 lub DF-15</center>",
           "Electron": "<center>Nowozelandzka dwustopniowa rakieta opracowana przez firmę Rocket Lab będąca pierwszą rakietą zasilaną przez silnik z pompą elektryczną</center>",
@@ -134,6 +134,10 @@ function displayLaunchData(results) {
           "Firefly Alpha": "<center>Dwustopniowy pojazd nośny opracowany przez amerykańską firmę Firefly Aerospace</center>",
           "Soyuz 2.1a": "<center>Zmodernizowana wersja radzieckiej trzystopniowej rakiety Sojuz, która przeszła z analogowego systemu sterowania na cyfrowy</center>",
           "Soyuz 2-1v": "<center>Zmodernizowana wersja radzieckiej trzystopniowej rakiety Sojuz bez bocznych boosterów</center>",
+          "Kuaizhou": "<center>Rodzina trójstopniowych chińskich rakiet szybkiego reagowania zasilanych na paliwo stałe</center>",
+          "Long March 11": "<center>Chińska czterostopniowa rakieta zasilana na paliwo stałe, opracowana przez China Aerospace Science and Technology Corporation</center>",
+          "Long March 3B/YZ-1": "<center>Trójstopniowa rakieta z czterema boosterami, będąca najcięższym wariantem z rodziny rakiet Long March</center>",
+          "Soyuz": "<center>Rodzina rosyjskich rakiet nośnych wyprodukowane przez Progress Rocket Space Center</center>",
         };
         return tooltipRocket[rocketName] || "Oops... Chyba nie ustawiłem tutaj opisu";
       }
@@ -168,6 +172,10 @@ function displayLaunchData(results) {
       if (statusElement.innerHTML === "WSTRZYMANO") {
         statusElement.className = "doUstalenia";
       }
+      if (statusElement.innerHTML === "CZĘŚCIOWA PORAŻKA") {
+        statusElement.className = "doUstalenia";
+        missionNameElement.className = "poMisji";
+      }
 
       const locationName = translateLaunch(
         result.pad.location.name.split(",")[0]
@@ -199,12 +207,14 @@ function displayLaunchData(results) {
       
       function getTooltipContentForOrbit(orbitInfo) {
         const tooltipOrbit = {
-          "LEO": "<center>Czyli taka, która nie przekracza wysokości 2000 kilometrów nad powierzchnią Ziemii</center>",
-          "POLARNA": "<center>Orbita polarna, czyli taka gdzie satelita przelatuje nad obydwoma biegunami Ziemi gdzie jej nachylenie jest w granicach od 60 do 90 stopni</center>",
-          "LOT SUBORBITALNY": "<center>To taki lot, podczas którego dociera do przestrzeni kosmicznej, ale trajektoria lotu nie pozwala na wejście na orbitę</center>",
+          "BRAK INFORMACJI": "<center>Docelowa orbita tego lotu nie została ujawniona</center>",
+          "LEO": "<center>Orbita, która nie przekracza wysokości 2000 kilometrów nad powierzchnią Ziemii</center>",
+          "POLARNA": "<center>Orbita polarna, gdzie ładunek ma przelatywać nad obydwoma biegunami Ziemi przy nachyleniu w granicach od 60 do 90 stopni</center>",
+          "LOT SUBORBITALNY": "<center>Lot podczas którego rakieta dociera do przestrzeni kosmicznej, ale trajektoria lotu nie pozwala na wejście na orbitę</center>",
           "ELIPTYCZNA": "<center>Orbita eliptyczna to orbita kołowa z mimośrodem (parametr o ile jakaś orbita odbiega od idealnego koła), który jest równy 1</center>",
           "GTO": "<center>Orbita geosynchroniczna to orbita z okresem orbitalnym odpowiadającym obrotowi Ziemi, który wokół własnej osi wynoszącym 1 dzień gwiezdny</center>",
           "SSO": "<center>Orbita, która, po której satelita poprzedzająca każdego roku jeden pełny obrót wokół Słońca</center>",
+          "MEO": "<center>Średnia orbita okołoziemska, skupiona wokół Ziemi znajdująca się gdzieś pomiędzy 2000 a 36 000 kilometrów nad poziomem morza</center>",
         };
         return tooltipOrbit[orbitInfo] || "Oops... Chyba nie ustawiłem tutaj opisu";
       }
@@ -224,15 +234,16 @@ function displayLaunchData(results) {
       
       function getTooltipContentForAgency(agencyInfo) {
         const tooltipAgency = {
-          "SpaceX": "<center>Amerykańska firma świadcząca usługi transportu kosmicznego, która została założona w 2002 roku przez Elona Muska w celu obniżenia kosztów transportu kosmicznego</center>",
-          "iSpace": "<center>Założona w październiku 2016 roku chińska prywatna firma zajmująca się rozwojem i wystrzeliwaniem rakiet w przestrzeń kosmiczną</center>",
+          "SpaceX": "<center>Amerykańska firma trudząca się transportem kosmicznym, założona przez Elona Muska</center>",
+          "iSpace": "<center>Założona w październiku 2016 roku chińska prywatna firma zajmująca się wystrzeliwaniem rakiet w przestrzeń kosmiczną</center>",
           "ROSCOSMOS": "<center>Rządowa agencja odpowiedzialną za program kosmiczny Federacji Rosyjskiej i ogólne rosyjskie badania lotnicze</center>",
           "Blue Origin": "<center>Amerykański prywatny producent lotniczy i firma świadcząca usługi lotów kosmicznych, która została założona przez Jeffa Bezosa</center>",
           "ISRO": "<center>Indyjska agencją kosmiczna, której główną wizją jest wykorzystywanie technologii kosmicznej do rozwoju Indii przy jednoczesnym prowadzeniu badań naukowych</center>",
-          "CASC": "<center>Główny wykonawca chińskiego programu kosmicznego, który został oficjalnie powołany w lipcu 1999 roku przez rząd Chińskiej Republiki Ludowej</center>",
+          "CASC": "<center>Główny wykonawca chińskiego programu kosmicznego, powołany w lipcu 1999 roku</center>",
           "Rocket Lab": "<center>Amerykańska firma z branży lotniczej i kosmicznej, która posiada spółkę zależną w Nowej Zelandii, która opracowuje komercyjne rakiety nośne</center>",
-          "Firefly Aerospace": "<center>Amerykańska firma z branży kosmicznej, która opracowuje rakiety nośne do komercyjnych lotów w kosmos</center>",
-          "Rosyjskie Siły Kosmiczne": "<center>Wojsko federacji rosyjskiej, których zadaniami jest obrona antybalistyczna kraju oraz budowa i kontrola nad satelitami o znaczeniu militarnym</center>",
+          "Firefly Aerospace": "<center>Amerykańska firma, która opracowuje rakiety nośne do komercyjnych lotów w kosmos</center>",
+          "Rosyjskie Siły Kosmiczne": "<center>Wojska federacji rosyjskiej, których zadaniami jest przede wszystkim obrona antybalistyczna kraju oraz kontrola satelitów wojskowych</center>",
+          "ExPace": "<center>Chińska spółka należąca w całości do China Aerospace Science and Industry Corporation, która specjalizuje się w komercyjnych startach rakiet</center>",
         };
         return tooltipAgency[agencyInfo] || "Oops... Chyba nie ustawiłem tutaj opisu";
       }
@@ -253,7 +264,8 @@ function displayLaunchData(results) {
           "DATA POTWIERDZONA": "<center>Data została potwierdzona przez oficjalne źródła</center>",
           "DO POTWIERDZENIA": "<center>Oczekiwanie na oficjalne potwierdzenie daty, która jest mniej więcej znana</center>",
           "DO USTALENIA": "<center>Data jest bardzo przybliżona i jest oparta na niewiarygodnych źródłach</center>",
-          "WSTRZYMANO": "<center>Odliczanie zostało wstrzymane, a start może nastąpić w przewidzianym oknie startowym</center>"
+          "WSTRZYMANO": "<center>Odliczanie zostało wstrzymane, a start może nastąpić w przewidzianym oknie startowym</center>",
+          "CZĘŚCIOWA PORAŻKA": "<center>Osiągnięto orbitę, lecz nie dostarczono ładunku na docelową orbitę lub coś uniemożliwia uznać tej misji za udaną...</center>",
         };
         return tooltipResult[statusElement] || "Oops... Chyba nie ustawiłem tutaj opisu";
       }
