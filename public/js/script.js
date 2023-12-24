@@ -214,7 +214,7 @@ function displayLaunchData(results) {
           "ELIPTYCZNA": "<center>Orbita eliptyczna to orbita kołowa z mimośrodem (parametr o ile jakaś orbita odbiega od idealnego koła), który jest równy 1</center>",
           "GTO": "<center>Orbita geosynchroniczna to orbita z okresem orbitalnym odpowiadającym obrotowi Ziemi, który wokół własnej osi wynoszącym 1 dzień gwiezdny</center>",
           "SSO": "<center>Orbita, która, po której satelita poprzedzająca każdego roku jeden pełny obrót wokół Słońca</center>",
-          "MEO": "<center>Średnia orbita okołoziemska, skupiona wokół Ziemi znajdująca się gdzieś pomiędzy 2000 a 36 000 kilometrów nad poziomem morza</center>",
+          "MEO": "<center>Średnia orbita okołoziemska, skupiona wokół Ziemi znajdująca się gdzieś pomiędzy 2000 a 36&nbsp000 kilometrów nad poziomem morza</center>",
         };
         return tooltipOrbit[orbitInfo] || "Oops... Chyba nie ustawiłem tutaj opisu";
       }
