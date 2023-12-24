@@ -138,6 +138,7 @@ function displayLaunchData(results) {
           "Long March 11": "<center>Chińska czterostopniowa rakieta zasilana na paliwo stałe, opracowana przez China Aerospace Science and Technology Corporation</center>",
           "Long March 3B/YZ-1": "<center>Trójstopniowa rakieta z czterema boosterami, będąca najcięższym wariantem z rodziny rakiet Long March</center>",
           "Soyuz": "<center>Rodzina rosyjskich rakiet nośnych wyprodukowane przez Progress Rocket Space Center</center>",
+          "Ceres-1": "<center>Chińska czterostopniowa rakieta, zasilana na paliwo stałe i przez hydrazynę w ostatnim stopniu</center>",
         };
         return tooltipRocket[rocketName] || "Oops... Chyba nie ustawiłem tutaj opisu";
       }
@@ -209,12 +210,12 @@ function displayLaunchData(results) {
         const tooltipOrbit = {
           "BRAK INFORMACJI": "<center>Docelowa orbita tego lotu nie została ujawniona</center>",
           "LEO": "<center>Orbita, która nie przekracza wysokości 2000 kilometrów nad powierzchnią Ziemii</center>",
-          "POLARNA": "<center>Orbita polarna, gdzie ładunek ma przelatywać nad obydwoma biegunami Ziemi przy nachyleniu w granicach od 60 do 90 stopni</center>",
-          "LOT SUBORBITALNY": "<center>Lot podczas którego rakieta dociera do przestrzeni kosmicznej, ale trajektoria lotu nie pozwala na wejście na orbitę</center>",
-          "ELIPTYCZNA": "<center>Orbita eliptyczna to orbita kołowa z mimośrodem (parametr o ile jakaś orbita odbiega od idealnego koła), który jest równy 1</center>",
-          "GTO": "<center>Orbita geosynchroniczna to orbita z okresem orbitalnym odpowiadającym obrotowi Ziemi, który wokół własnej osi wynoszącym 1 dzień gwiezdny</center>",
-          "SSO": "<center>Orbita, która, po której satelita poprzedzająca każdego roku jeden pełny obrót wokół Słońca</center>",
-          "MEO": "<center>Średnia orbita okołoziemska, skupiona wokół Ziemi znajdująca się gdzieś pomiędzy 2000 a 36&nbsp000 kilometrów nad poziomem morza</center>",
+          "POLARNA": "<center>Orbita polarna, dzięki której satelita przelatuje nad obydwoma biegunami Ziemi</center>",
+          "LOT SUBORBITALNY": "<center>Lot, podczas którego obiekt dociera do przestrzeni kosmicznej, ale nie dochodzi do wejścia na orbitę</center>",
+          "ELIPTYCZNA": "<center>Orbita eliptyczna to charakteryzująca się kształtem elipsy orbita, której ruch opisują prawa Keplera</center>",
+          "GTO": "<center>Orbita geosynchroniczna to orbita odpowiadająca obrotowi Ziemi wokół własnej osi</center>",
+          "SSO": "<center>Orbita, która, po której satelita wykonuje każdego roku jeden pełny obrót wokół Słońca</center>",
+          "MEO": "<center>Średnia orbita okołoziemska, która znajduje się od wysokości 2000 kilometrów do 36&nbsp000 kilometrów</center>",
         };
         return tooltipOrbit[orbitInfo] || "Oops... Chyba nie ustawiłem tutaj opisu";
       }
@@ -244,6 +245,7 @@ function displayLaunchData(results) {
           "Firefly Aerospace": "<center>Amerykańska firma, która opracowuje rakiety nośne do komercyjnych lotów w kosmos</center>",
           "Rosyjskie Siły Kosmiczne": "<center>Wojska federacji rosyjskiej, których zadaniami jest przede wszystkim obrona antybalistyczna kraju oraz kontrola satelitów wojskowych</center>",
           "ExPace": "<center>Chińska spółka należąca w całości do China Aerospace Science and Industry Corporation, która specjalizuje się w komercyjnych startach rakiet</center>",
+          "Galactic Energy": "<center>Chińska prywatna firma zajmująca się komercyjnym wysyłaniem rakiet w kosmos oraz wydobywaniem rzadkich metali asteroid</center>",
         };
         return tooltipAgency[agencyInfo] || "Oops... Chyba nie ustawiłem tutaj opisu";
       }

@@ -1,16 +1,21 @@
-const raz = document.getElementById("raz");
-const dwa = document.getElementById("dwa");
+const unu = document.getElementById("unu");
+const du = document.getElementById("du");
+const tri = document.getElementById("tri");
 
 const leocja = document.getElementById("leocja");
 const edel = document.getElementById("edel");
 const vox = document.getElementById("vox");
 
-tippy(raz, {
+tippy(unu, {
   content: "Kamery na żywo z Boca Chica",
   placement: "bottom",
 });
-tippy(dwa, {
+tippy(du, {
   content: "Bazy wiedzy (TBD)",
+  placement: "bottom",
+});
+tippy(tri, {
+  content: "Mikronacyjne starty (TBD)",
   placement: "bottom",
 });
 tippy(leocja, {
