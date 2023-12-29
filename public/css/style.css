@@ -18,7 +18,6 @@ body {
   flex-direction: column;
   justify-content: flex-start;
   min-height: 100vh;
-  padding: 0.7rem;
   font-size: 1.1rem;
   touch-action: pan-x pan-y;
   overflow: auto;
@@ -150,7 +149,7 @@ body {
   flex-direction: row;
   gap: 1rem;
   margin-left: 20px;
-
+  cursor: default;
   font-family: "Roboto";
   text-align: center;
   font-size: 1.05rem;
@@ -164,7 +163,7 @@ body {
   margin-right: 20px;
   flex-direction: row;
   gap: 1rem;
-
+  cursor: default;
   font-family: "Roboto";
   text-align: center;
   font-size: 1.05rem;
@@ -194,7 +193,7 @@ body {
   justify-content: center;
   align-items: center;
   width: 100%;
-
+  cursor: default;
   color: #fff;
   text-align: center;
   font-family: "Roboto";
@@ -527,6 +526,10 @@ body {
   .nazwaMisji {
     font-size: 2rem;
   }
+
+  .mainInfo {
+    font-size: 0.8rem;
+  }
 }
 
 @media screen and (max-width: 650px) {
@@ -589,6 +592,9 @@ body {
   }
   #czasElement {
     margin-top: -67%;
+  }
+  .mainInfo {
+    font-size: 0.8rem;
   }
 }
 

@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="pl">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="./public/img/icon.png" type="image/x-icon">
     <link rel="stylesheet" href="./public/css/style.css">
     <meta property="og:title" content="Śledzik - Twoje RAKIETOWE miejsce w MIKRONACJACH!">
-    <meta property="og:description" content="Śledzik to bardzo PROSTY w obsłudze harmonogram najbliższych lotów KOSMICZNYCH!">
+    <meta property="og:description"
+        content="Śledzik to bardzo PROSTY w obsłudze harmonogram najbliższych lotów KOSMICZNYCH!">
     <title>Śledzik - Twoje RAKIETOWE miejsce w MIKRO!</title>
     <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
     <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.min.js"></script>
@@ -21,21 +21,30 @@
         <aside id="logo">
             <div class="logoContent">
                 <a href="glowna"><img src="./public/img/logo.webp"></a>
-                <div class="text">harmonogram najbliższych kosmicznych wydarzeń<br>
-                API jest dostarczane dzięki <a href="https://thespacedevs.com/llapi">The Space Devs</a><br>
-                <span class="copyleft">©</span> 2023 <a href="https://stempel.org.pl/paszport/1095">Damiano Windsachen</a> all wrongs reserved<br></div>
-                
+                <div class="text">harmonogram najbliższych wydarzeń kosmicznych<br>
+                    API jest dostarczane dzięki <a href="https://thespacedevs.com/llapi">The Space Devs</a><br>
+                    <span class="copyleft">©</span> <span id="year"></span> 
+                    <script>document.getElementById("year").innerHTML = new Date().getFullYear();</script>
+                    <a href="https://stempel.org.pl/paszport/1095">Damiano Windsachen</a> all wrongs reserved<br>
+                </div>
+
                 <div class="watkiContent">
                     <div class="kraj">
-                        <a href="https://forum.leocja.org/viewtopic.php?f=10&t=1352"><img id="leocja" src="./public/img/Mikro/LEO.webp"></a>
-                        <a href="https://edelweiss.org.pl/viewtopic.php?f=45&t=903"><img id="edel" src="./public/img/Mikro/EDE.webp"></a>
-                        <a href="https://forum.voxland.org.pl/viewtopic.php?t=516"><img id="vox" src="./public/img/Mikro/VOX.webp"></a>
+                        <a href="https://forum.leocja.org/viewtopic.php?f=10&t=1352"><img id="leocja"
+                                src="./public/img/Mikro/LEO.webp"></a>
+                        <a href="https://edelweiss.org.pl/viewtopic.php?f=45&t=903"><img id="edel"
+                                src="./public/img/Mikro/EDE.webp"></a>
+                        <a href="https://forum.voxland.org.pl/viewtopic.php?t=516"><img id="vox"
+                                src="./public/img/Mikro/VOX.webp"></a>
+                        <a href=""><img id="nor"
+                                src="./public/img/Mikro/NOR.webp"></a>
                     </div>
                 </div>
                 <div class="borderUp">
                     <a href="https://multistream.whataboutit.space/"><i id="unu" class="las la-camera"></i></a>
                     <i id="du" class="las la-clipboard-list"></i>
                     <i id="tri" class="las la-space-shuttle"></i>
+                    <i id="kvar" class="las la-chart-bar"></i>
                 </div>
         </aside>
 

@@ -7,6 +7,7 @@ function getStatusAbbreviation(status) {
     "Launch Successful": "SUKCES",
     "Launch Failure": "PORAŻKA",
     "On Hold": "WSTRZYMANO",
+    "Launch in Flight": "W TRAKCIE",
   };
 
   return statusMap[status] || status;
@@ -76,9 +77,9 @@ function fetchData() {
     }
   }
 
-  const url = "https://ll.thespacedevs.com/2.2.0/launch/upcoming/?limit=10";
+  const urlRocket = "https://ll.thespacedevs.com/2.2.0/launch/upcoming/?limit=10";
 
-  fetch(url)
+  fetch(urlRocket)
     .then((res) => res.json())
     .then((data) => {
       localStorage.setItem("cachedData", JSON.stringify(data));
@@ -177,6 +178,10 @@ function displayLaunchData(results) {
         statusElement.className = "doUstalenia";
         missionNameElement.className = "poMisji";
       }
+      if (statusElement.innerHTML === "W TRAKCIE") {
+        statusElement.className = "doUstalenia";
+        missionNameElement.className = "poMisji";
+      }
 
       const locationName = translateLaunch(
         result.pad.location.name.split(",")[0]
@@ -268,6 +273,7 @@ function displayLaunchData(results) {
           "DO USTALENIA": "<center>Data jest bardzo przybliżona i jest oparta na niewiarygodnych źródłach</center>",
           "WSTRZYMANO": "<center>Odliczanie zostało wstrzymane, a start może nastąpić w przewidzianym oknie startowym</center>",
           "CZĘŚCIOWA PORAŻKA": "<center>Osiągnięto orbitę, lecz nie dostarczono ładunku na docelową orbitę lub coś uniemożliwia uznać tej misji za udaną...</center>",
+          "W TRAKCIE": "<center>Ten start właśnie się odbywa!</center>"
         };
         return tooltipResult[statusElement] || "Oops... Chyba nie ustawiłem tutaj opisu";
       }
