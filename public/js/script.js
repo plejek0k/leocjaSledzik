@@ -59,6 +59,7 @@ function brakOrbity(orbitInfo) {
     "Sub": "LOT SUBORBITALNY",
     "Elliptical": "ELIPTYCZNA",
     "PO": "POLARNA",
+    "LO": "KSIĘŻYCOWA",
   };
   return brakOrbityPoprawka[orbitInfo] || orbitInfo;
 }
@@ -105,15 +106,28 @@ function displayLaunchData(results) {
       dupaElement.className = "obrazekFrame";
 
       const rocketName = result.rocket.configuration.name;
-
       const missionName = poprawaMisji(
-        result.mission.name.replace(/\(([^)]+)\)/g, "")
+          result.mission.name.replace(/\(([^)]+)\)/g, "")
       );
-
+      
+      // Function to remove text after "/"
+      function removeTextAfterSlash(inputText) {
+          const slashIndex = inputText.indexOf('/');
+          if (slashIndex !== -1) {
+              return inputText.substring(0, slashIndex);
+          } else {
+              return inputText;
+          }
+      }
+      
+      // Modify rocketName using the removeTextAfterSlash function
+      const modifiedRocketName = removeTextAfterSlash(rocketName);
+      
       const rocketNameElement = document.createElement("p");
-      rocketNameElement.textContent = `${rocketName}`;
+      rocketNameElement.textContent = `${modifiedRocketName}`;
       rocketNameElement.className = "nazwaRakiety";
-      rocketNameElement.dataset.tippyContent = getTooltipContentForRocket(rocketName);
+      rocketNameElement.dataset.tippyContent = getTooltipContentForRocket(modifiedRocketName);
+      
       
       tippy(rocketNameElement, {
         content: rocketNameElement.dataset.tippyContent,
@@ -127,7 +141,7 @@ function displayLaunchData(results) {
           "Long March 5": "<center>Chińska ciężka rakieta nośna opracowana przez Chińską Akademię Technologii Pojazdów Startowych, będąca najpotężniejszą rakietą z rodziny rakiet Long March</center>",
           "Hyperbola-1": "<center>Chińska rakieta składająca się z czterech stopni, które są zasilane wyłącznie paliwem stałym, bazująca na pociskach balistycznych DF-11 lub DF-15</center>",
           "Electron": "<center>Nowozelandzka dwustopniowa rakieta opracowana przez firmę Rocket Lab będąca pierwszą rakietą zasilaną przez silnik z pompą elektryczną</center>",
-          "Soyuz 2.1b/Fregat-M": "<center>Zmodernizowana wersja radzieckiej trzystopniowej rakiety Sojuz z silnikiem RD-0124, ze zwiększoną ładownością do 8,2 ton</center>",
+          "Soyuz 2.1b": "<center>Zmodernizowana wersja radzieckiej trzystopniowej rakiety Sojuz z silnikiem RD-0124, ze zwiększoną ładownością do 8,2 ton</center>",
           "New Shepard": "<center>Suborbitalna rakieta wielokrotnego użytku opracowany z myślą o turystyce kosmicznej przez firmę Blue Origin, nazwany na cześć Alana Sheparda, który jako pierwszy Amerykanin poleciał w kosmos</center>",
           "Falcon Heavy": "<center>Superciężka rakieta nośna, która została zaprojektowana przez amerykańską firmę SpaceX</center>",
           "PSLV-DL": "<center>Jeden z wariantów indyjskiej rakiety PSLV, który ma tylko dwa boostery i jest w stanie wystrzelić ładunek na orbitę synchroniczną ze Słońcem</center>",
@@ -137,9 +151,13 @@ function displayLaunchData(results) {
           "Soyuz 2-1v": "<center>Zmodernizowana wersja radzieckiej trzystopniowej rakiety Sojuz bez bocznych boosterów</center>",
           "Kuaizhou": "<center>Rodzina trójstopniowych chińskich rakiet szybkiego reagowania zasilanych na paliwo stałe</center>",
           "Long March 11": "<center>Chińska czterostopniowa rakieta zasilana na paliwo stałe, opracowana przez China Aerospace Science and Technology Corporation</center>",
-          "Long March 3B/YZ-1": "<center>Trójstopniowa rakieta z czterema boosterami, będąca najcięższym wariantem z rodziny rakiet Long March</center>",
+          "Long March 3B": "<center>Trójstopniowa rakieta z czterema boosterami, będąca najcięższym wariantem z rodziny rakiet Long March</center>",
           "Soyuz": "<center>Rodzina rosyjskich rakiet nośnych wyprodukowane przez Progress Rocket Space Center</center>",
           "Ceres-1": "<center>Chińska czterostopniowa rakieta, zasilana na paliwo stałe i przez hydrazynę w ostatnim stopniu</center>",
+          "Long March 2C": "<center>Chińska rakieta nośna niskiego udźwigu wykorzystywana głównie do startów komercyjnych</center>",
+          "Vulcan VC2S": "<center>Ciężka rakieta nośna wykorzystywana przez Siły Kosmiczne Stanów Zjednoczonych, w tej wersji wystartuje z dwoma boosterami</center>",
+          "Kinetica 1": "<center>Rakieta nośna składająca się z czterech stopni, w całości zasilanych paliwem stałym</center>",
+          "H-IIA 202": "<center>Japoński system rakietowy wykorzystywany głównie do wysyłania satelitów na orbitę geostacjonarną w tej wersji występuje z dwoma bocznymi boosterami</center>",
         };
         return tooltipRocket[rocketName] || "Oops... Chyba nie ustawiłem tutaj opisu";
       }
@@ -221,6 +239,8 @@ function displayLaunchData(results) {
           "GTO": "<center>Orbita geosynchroniczna to orbita odpowiadająca obrotowi Ziemi wokół własnej osi</center>",
           "SSO": "<center>Orbita, która, po której satelita wykonuje każdego roku jeden pełny obrót wokół Słońca</center>",
           "MEO": "<center>Średnia orbita okołoziemska, która znajduje się od wysokości 2000 kilometrów do 36&nbsp000 kilometrów</center>",
+          "KSIĘŻYCOWA": "<center>Orbita, która przebiega wokół Księżyca</center>",
+
         };
         return tooltipOrbit[orbitInfo] || "Oops... Chyba nie ustawiłem tutaj opisu";
       }
@@ -251,6 +271,9 @@ function displayLaunchData(results) {
           "Rosyjskie Siły Kosmiczne": "<center>Wojska federacji rosyjskiej, których zadaniami jest przede wszystkim obrona antybalistyczna kraju oraz kontrola satelitów wojskowych</center>",
           "ExPace": "<center>Chińska spółka należąca w całości do China Aerospace Science and Industry Corporation, która specjalizuje się w komercyjnych startach rakiet</center>",
           "Galactic Energy": "<center>Chińska prywatna firma zajmująca się komercyjnym wysyłaniem rakiet w kosmos oraz wydobywaniem rzadkich metali asteroid</center>",
+          "United Launch Alliance": "<center>Amerykańska spółka zajmująca się wynoszeniem ładunków w przestrzeń kosmiczną</center>",
+          "CAS Space": "<center>Chińska firma zajmująca się komercyjnym wysyłaniem ładunków w przestrzeń kosmiczną częściowo należące do Chińskiej Akademii Nauk</center>",
+          "Mitsubishi Heavy Industries": "<center>Japońska międzynarodowa korporacja zajmująca się inżynierią oraz urządzeniami elektrycznymi</center>",
         };
         return tooltipAgency[agencyInfo] || "Oops... Chyba nie ustawiłem tutaj opisu";
       }

@@ -2,6 +2,7 @@ const unu = document.getElementById("unu");
 const du = document.getElementById("du");
 const tri = document.getElementById("tri");
 const kvar = document.getElementById("kvar");
+const kvin = document.getElementById("kvin");
 
 const leocja = document.getElementById("leocja");
 const edel = document.getElementById("edel");
@@ -24,6 +25,10 @@ tippy(tri, {
 });
 tippy(kvar, {
   content: "Statystyki (TBD)",
+  placement: "bottom",
+});
+tippy(kvin, {
+  content: "Repozytorium GitHub",
   placement: "bottom",
 });
 
