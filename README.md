@@ -1,4 +1,4 @@
-# Śledzik
+![](https://raw.githubusercontent.com/plejek0k/leocjaSledzik/main/public/img/logo.webp)
 
 A simple and beautiful launch schedule for all amazing rockets 🚀\
 created with ❤️ for the Polish virtual state the [Palatinate of Leocia](https://leocja.org)
