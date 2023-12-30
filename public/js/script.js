@@ -1,3 +1,8 @@
+var confettiElement = document.getElementById('body');
+var confettiSettings = { target: confettiElement };
+var confetti = new ConfettiGenerator(confettiSettings);
+confetti.render();
+
 function getStatusAbbreviation(status) {
   const statusMap = {
     "To Be Confirmed": "DO POTWIERDZENIA",
@@ -48,7 +53,9 @@ function skrotAgencji(agencyInfo) {
     "China Aerospace Science and Technology Corporation": "CASC",
     "Indian Space Research Organization": "ISRO",
     "Russian Federal Space Agency (ROSCOSMOS)": "ROSCOSMOS",
-    "Russian Space Forces": "Rosyjskie Siły Kosmiczne"
+    "Russian Space Forces": "Rosyjskie Siły Kosmiczne",
+    "United Launch Alliance": "ULA",
+    "Mitsubishi Heavy Industries": "MHI",
   };
   return poprawkaAgencji[agencyInfo] || agencyInfo;
 }
@@ -144,7 +151,7 @@ function displayLaunchData(results) {
           "Soyuz 2.1b": "<center>Zmodernizowana wersja radzieckiej trzystopniowej rakiety Sojuz z silnikiem RD-0124, ze zwiększoną ładownością do 8,2 ton</center>",
           "New Shepard": "<center>Suborbitalna rakieta wielokrotnego użytku opracowany z myślą o turystyce kosmicznej przez firmę Blue Origin, nazwany na cześć Alana Sheparda, który jako pierwszy Amerykanin poleciał w kosmos</center>",
           "Falcon Heavy": "<center>Superciężka rakieta nośna, która została zaprojektowana przez amerykańską firmę SpaceX</center>",
-          "PSLV-DL": "<center>Jeden z wariantów indyjskiej rakiety PSLV, który ma tylko dwa boostery i jest w stanie wystrzelić ładunek na orbitę synchroniczną ze Słońcem</center>",
+          "PSLV-DL": "<center>Wariant indyjskiej rakiety PSLV (oferującej start na orbity polarne), który ma dwa boostery</center>",
           "Long March 2": "<center>Rakieta nośna obsługiwana przez Chińską Republikę Ludową, przy czym sam rozwój rakiety odbywa się dzięki Chińskiej Akademii Technologii Pojazdów Startowych</center>",
           "Firefly Alpha": "<center>Dwustopniowy pojazd nośny opracowany przez amerykańską firmę Firefly Aerospace</center>",
           "Soyuz 2.1a": "<center>Zmodernizowana wersja radzieckiej trzystopniowej rakiety Sojuz, która przeszła z analogowego systemu sterowania na cyfrowy</center>",
@@ -157,7 +164,9 @@ function displayLaunchData(results) {
           "Long March 2C": "<center>Chińska rakieta nośna niskiego udźwigu wykorzystywana głównie do startów komercyjnych</center>",
           "Vulcan VC2S": "<center>Ciężka rakieta nośna wykorzystywana przez Siły Kosmiczne Stanów Zjednoczonych, w tej wersji wystartuje z dwoma boosterami</center>",
           "Kinetica 1": "<center>Rakieta nośna składająca się z czterech stopni, w całości zasilanych paliwem stałym</center>",
-          "H-IIA 202": "<center>Japoński system rakietowy wykorzystywany głównie do wysyłania satelitów na orbitę geostacjonarną w tej wersji występuje z dwoma bocznymi boosterami</center>",
+          "H-IIA 202": "<center>Jeden z wariantów japońskiej ciężkiej rakiety nośnej H-IIA, który ma dwa boostery</center>",
+          "GSLV Mk II": "<center>Indyjka trzystopniowa rakieta nośna średniego udźwigu, używająca kriogenicznego silnika CE-7.5</center>",
+          "Long March 7": "<center>Chińska rakieta nośna napędzana paliwem płynnym, będącą następcą rakiety Long March 2F</center>",
         };
         return tooltipRocket[rocketName] || "Oops... Chyba nie ustawiłem tutaj opisu";
       }
@@ -271,9 +280,9 @@ function displayLaunchData(results) {
           "Rosyjskie Siły Kosmiczne": "<center>Wojska federacji rosyjskiej, których zadaniami jest przede wszystkim obrona antybalistyczna kraju oraz kontrola satelitów wojskowych</center>",
           "ExPace": "<center>Chińska spółka należąca w całości do China Aerospace Science and Industry Corporation, która specjalizuje się w komercyjnych startach rakiet</center>",
           "Galactic Energy": "<center>Chińska prywatna firma zajmująca się komercyjnym wysyłaniem rakiet w kosmos oraz wydobywaniem rzadkich metali asteroid</center>",
-          "United Launch Alliance": "<center>Amerykańska spółka zajmująca się wynoszeniem ładunków w przestrzeń kosmiczną</center>",
+          "ULA": "<center>Amerykańska spółka zajmująca się wynoszeniem ładunków w przestrzeń kosmiczną</center>",
           "CAS Space": "<center>Chińska firma zajmująca się komercyjnym wysyłaniem ładunków w przestrzeń kosmiczną częściowo należące do Chińskiej Akademii Nauk</center>",
-          "Mitsubishi Heavy Industries": "<center>Japońska międzynarodowa korporacja zajmująca się inżynierią oraz urządzeniami elektrycznymi</center>",
+          "MHI": "<center>Japońska międzynarodowa korporacja zajmująca się inżynierią oraz urządzeniami elektrycznymi</center>",
         };
         return tooltipAgency[agencyInfo] || "Oops... Chyba nie ustawiłem tutaj opisu";
       }
