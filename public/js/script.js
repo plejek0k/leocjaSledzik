@@ -1,8 +1,3 @@
-var confettiElement = document.getElementById('body');
-var confettiSettings = { target: confettiElement };
-var confetti = new ConfettiGenerator(confettiSettings);
-confetti.render();
-
 function getStatusAbbreviation(status) {
   const statusMap = {
     "To Be Confirmed": "DO POTWIERDZENIA",
@@ -28,6 +23,7 @@ function translateLaunch(locationName) {
     "Baikonur Cosmodrome": "Baikonur",
     "SpaceX Space Launch Facility": "Boca Chica",
     "Satish Dhawan Space Centre": "Sriharikota Range",
+    "Sea Launch": "Wody międzynarodowe",
   };
   return launchPoprawka[locationName] || locationName;
 }
@@ -147,7 +143,7 @@ function displayLaunchData(results) {
           "Falcon 9": "<center>Rakieta wielokrotnego użytku wyprodukowana przez firmę SpaceX będąca pierwszą komercyjną rakietą, która wyniosła człowieka na orbitę</center>",
           "Long March 5": "<center>Chińska ciężka rakieta nośna opracowana przez Chińską Akademię Technologii Pojazdów Startowych, będąca najpotężniejszą rakietą z rodziny rakiet Long March</center>",
           "Hyperbola-1": "<center>Chińska rakieta składająca się z czterech stopni, które są zasilane wyłącznie paliwem stałym, bazująca na pociskach balistycznych DF-11 lub DF-15</center>",
-          "Electron": "<center>Nowozelandzka dwustopniowa rakieta opracowana przez firmę Rocket Lab będąca pierwszą rakietą zasilaną przez silnik z pompą elektryczną</center>",
+          "Electron": "<center>Nowozelandzka rakieta nośna, będąca pierwszą rakietą zasilaną przez silnik z pompą elektryczną</center>",
           "Soyuz 2.1b": "<center>Zmodernizowana wersja radzieckiej trzystopniowej rakiety Sojuz z silnikiem RD-0124, ze zwiększoną ładownością do 8,2 ton</center>",
           "New Shepard": "<center>Suborbitalna rakieta wielokrotnego użytku opracowany z myślą o turystyce kosmicznej przez firmę Blue Origin, nazwany na cześć Alana Sheparda, który jako pierwszy Amerykanin poleciał w kosmos</center>",
           "Falcon Heavy": "<center>Superciężka rakieta nośna, która została zaprojektowana przez amerykańską firmę SpaceX</center>",
@@ -167,6 +163,8 @@ function displayLaunchData(results) {
           "H-IIA 202": "<center>Jeden z wariantów japońskiej ciężkiej rakiety nośnej H-IIA, który ma dwa boostery</center>",
           "GSLV Mk II": "<center>Indyjka trzystopniowa rakieta nośna średniego udźwigu, używająca kriogenicznego silnika CE-7.5</center>",
           "Long March 7": "<center>Chińska rakieta nośna napędzana paliwem płynnym, będącą następcą rakiety Long March 2F</center>",
+          "Gravity-1": "<center>Chińska rakieta nośna napędzana paliwem stałym, będąca w stanie wynieść ładunek o masie 6,5 ton na niską orbitę okołoziemską</center>",
+          "SpaceShipTwo": "<center>Wystrzeliwany z powietrza, suborbitalny samolot kosmiczny przeznaczony głównie do realizacji turystycznych lotów kosmicznych</center>",
         };
         return tooltipRocket[rocketName] || "Oops... Chyba nie ustawiłem tutaj opisu";
       }
@@ -283,6 +281,8 @@ function displayLaunchData(results) {
           "ULA": "<center>Amerykańska spółka zajmująca się wynoszeniem ładunków w przestrzeń kosmiczną</center>",
           "CAS Space": "<center>Chińska firma zajmująca się komercyjnym wysyłaniem ładunków w przestrzeń kosmiczną częściowo należące do Chińskiej Akademii Nauk</center>",
           "MHI": "<center>Japońska międzynarodowa korporacja zajmująca się inżynierią oraz urządzeniami elektrycznymi</center>",
+          "Orienspace Technology": "<center>Chińskie przedsiębiorstwo projektujące rakiety nośne Gravity Series oraz silniki Force Series</center>",
+          "Virgin Galactic": "<center>Amerykańska firma projektująca statki kosmiczne, które zapewniają loty swoim klientom</center>",
         };
         return tooltipAgency[agencyInfo] || "Oops... Chyba nie ustawiłem tutaj opisu";
       }
