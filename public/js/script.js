@@ -24,6 +24,7 @@ function translateLaunch(locationName) {
     "SpaceX Space Launch Facility": "Boca Chica",
     "Satish Dhawan Space Centre": "Sriharikota Range",
     "Sea Launch": "Wody międzynarodowe",
+    "Pacific Spaceport Complex": "Pacific Spaceport",
   };
   return launchPoprawka[locationName] || locationName;
 }
@@ -33,7 +34,19 @@ function poprawaMisji(missionName) {
     "Unknown Payload": "Ładunek nieznany",
   };
 
-  const missionWithoutFLTA = missionName.replace(/FLTA\d+\s*/, '');
+  const replacements = {
+    "Space Mission": "",
+    "Group": "Grupa"
+  };
+
+  let dynamicMissionName = missionName;
+  Object.keys(replacements).forEach(key => {
+    dynamicMissionName = dynamicMissionName.replace(new RegExp(key, 'g'), replacements[key]);
+  });
+
+  dynamicMissionName = dynamicMissionName.replace(/\bCRS-\d+\b/g, '');
+
+  const missionWithoutFLTA = dynamicMissionName.replace(/FLTA\d+\s*/, '');
   const regex = /Dragon CRS-2 SpX-(\d+)/;
   const match = missionWithoutFLTA.match(regex);
 
@@ -43,6 +56,8 @@ function poprawaMisji(missionName) {
     return misjaPoprawka[missionName] || missionWithoutFLTA;
   }
 }
+
+
 
 function skrotAgencji(agencyInfo) {
   const poprawkaAgencji = {
