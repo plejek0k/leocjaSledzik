@@ -25,6 +25,7 @@ function translateLaunch(locationName) {
     "Satish Dhawan Space Centre": "Sriharikota Range",
     "Sea Launch": "Wody międzynarodowe",
     "Pacific Spaceport Complex": "Pacific Spaceport",
+    "Shahrud Missile Test Site": "Shahroud",
   };
   return launchPoprawka[locationName] || locationName;
 }
@@ -40,6 +41,7 @@ function poprawaMisji(missionName) {
   };
 
   let dynamicMissionName = missionName;
+
   Object.keys(replacements).forEach(key => {
     dynamicMissionName = dynamicMissionName.replace(new RegExp(key, 'g'), replacements[key]);
   });
@@ -47,6 +49,7 @@ function poprawaMisji(missionName) {
   dynamicMissionName = dynamicMissionName.replace(/\bCRS-\d+\b/g, '');
 
   const missionWithoutFLTA = dynamicMissionName.replace(/FLTA\d+\s*/, '');
+
   const regex = /Dragon CRS-2 SpX-(\d+)/;
   const match = missionWithoutFLTA.match(regex);
 
@@ -57,8 +60,6 @@ function poprawaMisji(missionName) {
   }
 }
 
-
-
 function skrotAgencji(agencyInfo) {
   const poprawkaAgencji = {
     "China Aerospace Science and Technology Corporation": "CASC",
@@ -67,6 +68,7 @@ function skrotAgencji(agencyInfo) {
     "Russian Space Forces": "Rosyjskie Siły Kosmiczne",
     "United Launch Alliance": "ULA",
     "Mitsubishi Heavy Industries": "MHI",
+    "Islamic Revolutionary Guard Corps Aerospace Force": "NEHSA"
   };
   return poprawkaAgencji[agencyInfo] || agencyInfo;
 }
@@ -123,12 +125,15 @@ function displayLaunchData(results) {
       const dupaElement = document.createElement("div");
       dupaElement.className = "obrazekFrame";
 
+      NProgress.start();
+
+      dupaElement.onloadend = NProgress.done();
+
       const rocketName = result.rocket.configuration.name;
       const missionName = poprawaMisji(
           result.mission.name.replace(/\(([^)]+)\)/g, "")
       );
       
-      // Function to remove text after "/"
       function removeTextAfterSlash(inputText) {
           const slashIndex = inputText.indexOf('/');
           if (slashIndex !== -1) {
@@ -137,8 +142,7 @@ function displayLaunchData(results) {
               return inputText;
           }
       }
-      
-      // Modify rocketName using the removeTextAfterSlash function
+
       const modifiedRocketName = removeTextAfterSlash(rocketName);
       
       const rocketNameElement = document.createElement("p");
@@ -180,6 +184,7 @@ function displayLaunchData(results) {
           "Long March 7": "<center>Chińska rakieta nośna napędzana paliwem płynnym, będącą następcą rakiety Long March 2F</center>",
           "Gravity-1": "<center>Chińska rakieta nośna napędzana paliwem stałym, będąca w stanie wynieść ładunek o masie 6,5 ton na niską orbitę okołoziemską</center>",
           "SpaceShipTwo": "<center>Wystrzeliwany z powietrza, suborbitalny samolot kosmiczny przeznaczony głównie do realizacji turystycznych lotów kosmicznych</center>",
+          "RS1": "<center>Dwustopniowa rakieta, napędzana na silnik rakietowy E2, który działa na naftę RP-1 i ciekły tlen</center>",
         };
         return tooltipRocket[rocketName] || "Oops... Chyba nie ustawiłem tutaj opisu";
       }
@@ -298,6 +303,7 @@ function displayLaunchData(results) {
           "MHI": "<center>Japońska międzynarodowa korporacja zajmująca się inżynierią oraz urządzeniami elektrycznymi</center>",
           "Orienspace Technology": "<center>Chińskie przedsiębiorstwo projektujące rakiety nośne Gravity Series oraz silniki Force Series</center>",
           "Virgin Galactic": "<center>Amerykańska firma projektująca statki kosmiczne, które zapewniają loty swoim klientom</center>",
+          "ABL Space Systems": "<center>Amerykański dostawca usług kosmicznych, produkujący rakiety nośne oraz zapewniający warunki do wysyłania komercyjnych satelitów</center>",
         };
         return tooltipAgency[agencyInfo] || "Oops... Chyba nie ustawiłem tutaj opisu";
       }

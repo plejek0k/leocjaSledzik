@@ -547,18 +547,6 @@ body {
     width: 100%;
   }
 
-  #czasElement {
-    display: flex;
-    text-align: center;
-    align-items: center;
-    justify-content: center;
-    background: rgba(17, 17, 17, 0.5);
-    border-radius: 12px;
-    padding: 15px;
-    margin-top: -55%;
-    color: #fff;
-  }
-
   .start .obrazekFrame {
     height: 28vh;
   }
@@ -580,16 +568,14 @@ body {
   }
 
   .nazwaMisji {
-    display: flex;
-    justify-content: center;
-    justify-items: center;
-    align-items: center;
-    padding-bottom: 6rem;
-    margin-left: 0;
+    font-size: 3rem;
   }
 
   .poMisji {
     padding-bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .wynikMisji {
@@ -597,7 +583,11 @@ body {
     padding-bottom: 0px;
   }
   #czasElement {
-    margin-top: -67%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: -45%;
+    margin-left: 20rem;
   }
   .mainInfo {
     font-size: 0.8rem;
@@ -606,11 +596,18 @@ body {
 
 @media screen and (max-width: 420px) {
   #nazwaMisji {
-    font-size: 1.8rem;
-    padding-bottom: 8rem;
+    font-size: 2rem;
   }
 
   #czasElement {
-    margin-top: -67%;
+    border-radius: 12px;
+    padding: 10px;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: -75%;
+    color: #fff;
+    font-size: 1rem;
+    margin-left: 6rem;
   }
 }
