@@ -1,85 +1,19 @@
-@import url("https://fonts.googleapis.com/css2?family=Open+Sans&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Open+Sans&family=Roboto:wght@100;300;400;500;700;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
 
 * {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
   text-decoration: none;
-}
-
-#switch {
-  display: none;
-}
-
-@keyframes fadeOut {
-  to {
-    opacity: 0;
-  }
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 body {
   background-color: #111111;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  min-height: 100vh;
-  font-size: 1.1rem;
-  touch-action: pan-x pan-y;
-  overflow: auto;
-  font-family: "Open Sans";
-}
-
-#mainApp {
-  display: flex;
-  margin: 0.1vh;
-}
-
-#logo {
-  margin-top: 7vh;
-  padding: 1.2rem 0 0 1rem;
-  border: 0;
-  height: 100%;
-}
-
-.logoContent {
-  position: relative;
-  min-width: 20vw;
-  margin-left: 3vw;
-  font-size: 1.1rem;
-}
-
-.logoContent img {
-  color: #fff;
-  height: 75px;
-  margin-bottom: 0.75rem;
-  position: relative;
-}
-
-.obrazekFrame {
-  width: 65vw;
-  height: 14rem;
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-blend-mode: overlay;
-  background-color: rgba(187, 103, 225, 0.45);
-  box-shadow: 0px 0px 50px 0px rgba(255, 255, 255, 0.1);
-}
-
-.text {
-  text-align: left;
-  color: #5e5e5e;
-  font-size: 0.85rem;
-}
-
-.text a {
-  color: #fff;
-}
-
-.text a:hover {
-  color: #b967e1;
-  transition: 0.25s;
+  color: #ffffff;
+  font-family: "Inter";
 }
 
 .copyleft {
@@ -87,527 +21,200 @@ body {
   transform: rotate(180deg);
 }
 
+#mainApp {
+  margin: 0 30px;
+}
+
+#logo {
+  padding: 2rem 1rem 1rem 1rem;
+  display: flex;
+  align-items: center;
+  font-size: 0.85rem;
+  color: #5e5e5e;
+  padding-left: 3rem;
+}
+
+#logo a {
+  color: #ffffff;
+}
+
+#logo img {
+  height: 4em;
+  margin-bottom: 0.75rem;
+}
+
 #app {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(28em, 28em));
+  align-items: center;
+  justify-content: center;
+}
+
+.krajeUpHolder {
+  display: flex;
+  flex-direction: row;
+  position: absolute;
+  right: 80px;
+  top: 56.75px;
+  gap: 2rem;
+}
+
+#krajeItem {
+  display: inline-block;
   position: relative;
-  flex: 0 1 70vw;
-  padding: 0 1rem;
-  margin-left: 1%;
-  margin-top: 1.75rem;
-  color: #fff;
+}
+
+#krajeItem img {
+  height: 2rem;
+  border-radius: 0.5rem;
+  opacity: 0.9;
+  outline: rgba(184, 103, 225, 0.40) 0.5rem solid;
+  transition: outline 0.2s ease;
+}
+
+#krajeItem:hover img {
+  outline: rgba(184, 103, 225, 0.40) 0.8rem solid;
 }
 
 .start {
   display: flex;
+  background-position-x: 0%;
+  background-position-y: 0%;
+  background-repeat: repeat;
+  background-image: none;
+  background-size: auto;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  border-radius: 18px;
+  display: flex;
+  min-height: 252px;
   flex-direction: column;
-  margin-top: 2.5rem;
-  padding: 0.5rem 0rem 0.5rem 2.5rem;
-  border: 0;
-  border-radius: 2px;
-  max-width: 95vw;
+  justify-content: space-between;
+  margin: 1rem;
 }
 
-.obrazek {
-  border-radius: 4px;
+#czasDiv {
+  align-self: flex-start;
+  margin-left: 10px;
+  margin-top: 10px;
+  width: 12rem;
 }
 
-.headSection {
-  margin-top: 12px;
-  display: flex;
-  margin-bottom: 0.45rem;
-  gap: 1rem;
-}
-
-.nazwaMisji {
-  font-family: "Roboto";
-  color: #fff;
-  font-size: 3.5rem;
-  text-align: center;
-  line-height: normal;
-  font-weight: 700;
-  letter-spacing: 2.7px;
-  text-transform: uppercase;
-  letter-spacing: 2.7px;
-
-  height: 100%;
-  display: flex;
-  align-items: center;
-  margin-left: 20px;
-}
-
-.poMisji {
-  font-family: "Roboto";
-  font-size: 50px;
-  text-align: center;
-  line-height: normal;
-  font-weight: 700;
-  letter-spacing: 2.7px;
-  text-transform: uppercase;
-  letter-spacing: 2.7px;
-
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.info {
-  display: flex;
-  flex-direction: row;
-  gap: 1rem;
-  margin-left: 20px;
-  cursor: default;
-  font-family: "Roboto";
-  text-align: center;
-  font-size: 1.05rem;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.info2 {
-  display: flex;
-  justify-content: right;
-  margin-right: 20px;
-  flex-direction: row;
-  gap: 1rem;
-  cursor: default;
-  font-family: "Roboto";
-  text-align: center;
-  font-size: 1.05rem;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.nazwaRakiety {
-  margin-top: -2rem;
-}
-
-.orbitInfo {
-  margin-top: -2rem;
-}
-
-.agencyInfo {
-  margin-top: -2rem;
-}
-
-.lokalizacja {
-  margin-top: -2rem;
-  color: #fff;
-}
-
-.wynikMisji {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  cursor: default;
-  color: #fff;
-  text-align: center;
-  font-family: "Roboto";
+#streamIcon {
+  align-self: flex-end;
   font-size: 2rem;
-  letter-spacing: 3px;
-  margin-top: -1rem;
-  font-weight: 800;
-  text-transform: uppercase;
-}
-
-.status {
-  padding: 5px;
-  border-radius: 12px;
-  background-color: #498c49;
-  border: 0.25rem solid;
-  width: 27rem;
-}
-
-.wTrakcie {
-  padding: 5px;
-  border-radius: 12px;
-  background-color: #49488c;
-  border: 0.25rem solid;
-  width: 27rem;
-}
-
-.udany {
-  padding: 5px;
-  border-radius: 12px;
-  background-color: #498c49;
-  border: 0.25rem solid;
-  width: 27rem;
-}
-
-.nieUdany {
-  padding: 5px;
-  border-radius: 12px;
-  background-color: #8c4848;
-  border: 0.25rem solid;
-  width: 27rem;
-}
-
-.doPotwierdzenia {
-  padding: 5px;
-  border-radius: 12px;
-  background-color: #4f8c8c;
-  border: 0.25rem solid;
-  width: 27rem;
-}
-
-.doUstalenia {
-  padding: 5px;
-  border-radius: 12px;
-  background-color: #8c8c4b;
-  border: 0.25rem solid;
-  width: 27rem;
-}
-
-.potwierdzone {
-  padding: 5px;
-  border-radius: 12px;
-  background-color: #7c578c;
-  border: 0.25rem solid;
-  width: 27rem;
-}
-
-.watkiContent {
-  border-top: 1px solid #b967e1;
-  margin-top: 1rem;
-  padding-top: 1.25rem;
-  font-size: 1.1rem;
-  width: 20rem;
   color: #fff;
+  position: absolute;
+  margin-right: 10px;
+  margin-top: 10px;
 }
 
-.borderUp {
-  border-top: 1px solid #b967e1;
-  padding-top: 1rem;
-  font-size: 1.75rem;
-  width: 20rem;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-}
-
-.borderUp i {
-  color: #fff;
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
-}
-
-.borderUp i:hover {
+#streamIcon:hover {
   color: #b967e1;
-  transition: 0.25s;
-  cursor: pointer;
+  transition: 0.2s;
 }
 
-.czasDiv {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: row;
-  text-align: center;
-  width: 10rem;
-  margin-left: auto;
-  margin-right: 7.5rem;
+#noStreamIcon {
+  align-self: flex-end;
+  font-size: 2rem;
+  color: #fff;
+  position: absolute;
+  margin-right: 10px;
+  margin-top: 10px;
 }
 
 #czasElement {
-  display: flex;
-  flex-direction: row;
+  text-transform: uppercase;
+  font-size: 1rem;
+  border-radius: 0.5rem;
+  background: rgba(17, 17, 17, 0.45);
+  font-style: italic;
+  font-weight: 800;
+  color: #ffffff;
+  padding: 0.5rem 0.75rem;
   text-align: center;
-  background: rgba(17, 17, 17, 0.5);
-  border-radius: 12px;
-  padding: 15px;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  margin-top: -55%;
+}
+
+#nazwaMisji {
   color: #fff;
+  text-align: right;
+  width: 100%;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+  align-self: flex-end;
   font-size: 2rem;
-}
-
-.elementCzasu {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
-#czasValue {
-  text-align: center;
-  font-size: 3rem;
+  font-style: italic;
   font-weight: 600;
+  text-transform: uppercase;
+  padding-right: 4px;
+}
+
+.nazwaRakiety {
   color: #fff;
-  font-family: "Roboto";
+  text-align: right;
+  font-size: 1.25rem;
+  font-style: italic;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding-right: 4px;
 }
 
-#czasLabel {
-  text-align: center;
-  font-size: 1.1rem;
-  font-weight: 500;
-  margin-left: 10px;
-  margin-right: 10px;
-  font-family: "Roboto";
-  color: #b967e1;
+.info {
+  display: flex-end;
+  margin-right: 0.75rem;
+  margin-bottom: 5%;
 }
 
-#elementCzasuHolder {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-}
-
-.kraj {
-  display: flex;
-  flex-direction: row;
-  gap: 15px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.kraj a {
-  color: #fff;
-}
-
-.kraj a:hover {
-  transition: 0.25s;
-  opacity: 60%;
-}
-
-.kraj img {
-  height: 50px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  align-self: center;
-  margin-top: -8px;
-}
-
-.versionInfo {
-  border-top: 2px solid #b967e1;
-  border-top-style: dashed;
-  margin-top: 1.25rem;
-  padding-top: 1rem;
-  font-size: 0.85rem;
-  width: 20rem;
-  color: #5e5e5e;
-}
-
-.versionInfo a {
-  color: #fff;
-}
-
-.versionInfo a:hover {
-  color: #b967e1;
-  transition: 0.25s;
-}
-
-@media screen and (max-width: 1600px) {
-  .logoContent {
-    margin-left: 0;
-  }
-
-  #czasValue {
-    font-size: 2rem;
-    font-weight: 500;
-  }
-
-  #czasLabel {
-    font-size: 0.8rem;
-    margin-left: 8px;
-    margin-right: 8px;
-  }
-
-  #czasElement {
-    padding: 10px;
-    margin-top: -70%;
-  }
-
-  .czasDiv {
-    width: 8rem;
-    margin-left: auto;
-    margin-right: 5rem;
-  }
-
-  .nazwaRakiety {
-    margin-top: -2.5rem;
-  }
-
-  .orbitInfo {
-    margin-top: -2.5rem;
-  }
-
-  .agencyInfo {
-    margin-top: -2.5rem;
-  }
-
-  .lokalizacja {
-    margin-top: -2.5rem;
-    color: #fff;
-  }
-
-  .nazwaMisji {
-    font-size: 2.8rem;
-    font-weight: 600;
-    letter-spacing: 1.35px;
-    text-transform: uppercase;
-    letter-spacing: 1.35px;
-
-    height: 100%;
-    display: flex;
-    align-items: center;
-    margin-left: 10px;
-  }
-  .info {
-    margin-left: 10px;
-  }
-}
-
-@media screen and (max-width: 1210px) {
-  #app {
-    margin-right: 0;
-  }
-  .nazwaMisji {
-    font-size: 2.5rem;
-  }
-
-  .wynikMisji {
-    font-size: 2rem;
-  }
-
-  .start {
-    padding: 0.5rem 0rem 0.5rem 1.5rem;
-  }
-
-  #mainApp {
-    margin: 0;
-  }
-}
-
-@media screen and (max-width: 1080px) {
-  #mainApp {
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-
-  #app {
-    margin-left: 0;
-    margin-top: 1rem;
-  }
-
-  .start .obrazekFrame {
-    width: 95vw;
-  }
-
-  .start {
-    padding: 0;
-    margin-top: 5rem;
-    margin-bottom: 5rem;
-  }
-}
-
-@media screen and (max-width: 777px) {
-  .czasDiv {
-    display: flex;
-    justify-content: center;
-    justify-items: center;
-    align-items: center;
-    width: 100%;
-    height: 4rem;
-  }
-
-  #czasDiv {
-    width: 8rem;
-    margin-left: auto;
-    margin-right: 5rem;
-    margin-top: -5%;
-  }
-
-  #app {
-    padding: 0;
-    margin-left: 0;
-  }
-
-  .nazwaMisji {
-    font-size: 2rem;
-  }
-
-  .mainInfo {
-    font-size: 0.8rem;
-  }
-}
-
-@media screen and (max-width: 650px) {
-  #czasDiv {
-    display: flex;
-    justify-content: center;
-    justify-items: center;
-    align-items: center;
-    width: 100%;
-  }
-
-  .start .obrazekFrame {
-    height: 28vh;
-  }
-
-  .nazwaRakiety {
-    margin-top: -3rem;
-  }
-
-  .orbitInfo {
+@media screen and (max-width: 955px) {
+  .krajeUpHolder {
     display: none;
   }
 
-  .agencyInfo {
-    margin-top: -3rem;
-  }
-
-  .lokalizacja {
-    display: none;
-  }
-
-  .nazwaMisji {
-    font-size: 3rem;
-  }
-
-  .poMisji {
-    padding-bottom: 0;
+  #logo {
     display: flex;
-    align-items: center;
     justify-content: center;
-  }
-
-  .wynikMisji {
-    font-size: 1.5rem;
-    padding-bottom: 0px;
-  }
-  #czasElement {
-    display: flex;
     align-items: center;
-    justify-content: center;
-    margin-top: -45%;
-    margin-left: 20rem;
-  }
-  .mainInfo {
-    font-size: 0.8rem;
+    margin-left: -120px;
   }
 }
 
-@media screen and (max-width: 420px) {
+@media screen and (max-width: 440px) {
+  #logo {
+    margin-left: -100px;
+  }
+
+  #app {
+    grid-template-columns: repeat(auto-fit, minmax(27em, 27em));
+  }
+}
+
+@media screen and (max-width: 400px) {
+  #logo {
+    margin-left: -80px;
+  }
+
+  #app {
+    grid-template-columns: repeat(auto-fit, minmax(26em, 26em));
+  }
+}
+
+@media screen and (max-width: 380px) {
+  #logo {
+    margin-left: -40px;
+  }
+
   #nazwaMisji {
-    font-size: 2rem;
+    font-size: 1.65rem;
+  }
+  .text {
+    width: 25em;
   }
 
-  #czasElement {
-    border-radius: 12px;
-    padding: 10px;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    margin-top: -75%;
-    color: #fff;
-    font-size: 1rem;
-    margin-left: 6rem;
+  #app {
+    grid-template-columns: repeat(auto-fit, minmax(24em, 24em));
   }
 }
