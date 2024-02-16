@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="./public/img/icon.png" type="image/x-icon">
+    <link rel="stylesheet" href="./public/css/style.css">
+    <meta property="og:title" content="Śledzik - Twoje RAKIETOWE miejsce w MIKRONACJACH!">
+    <meta property="og:description"
+        content="Śledzik to bardzo PROSTY w obsłudze harmonogram najbliższych lotów KOSMICZNYCH!">
+    <title>Śledzik - Twoje RAKIETOWE miejsce w MIKRO!</title>
+    <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
+    <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.min.js"></script>
+    <script src="https://unpkg.com/tippy.js@6/dist/tippy-bundle.umd.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <script src="https://unpkg.com/nprogress@0.2.0/nprogress.js"></script>
+    <link rel="stylesheet" href="./public/css/nprogress.css">
+</head>
+
+<body>
+    <main id="mainApp">
+        <aside id="logo">
+            <div class="logoContent">
+                <img src="./public/img/logo.webp">
+                <div class="text">harmonogram najbliższych wydarzeń kosmicznych<br>
+                    API jest dostarczane dzięki <a href="https://thespacedevs.com/llapi">The Space Devs</a><br>
+                    <span class="copyleft">©</span> <span id="year"></span>
+                    <script>document.getElementById("year").innerHTML = new Date().getFullYear();</script>
+                    <a href="https://stempel.org.pl/paszport/1095">Damiano Windsachen</a> all wrongs reserved<br>
+                </div>
+        </aside>
+
+        <div id="app"></div>
+        <script src="./public/js/script.js"></script>
+        <script src="./public/js/mainTooltips.js"></script>
+    </main>
+</body>
+
+</html>
