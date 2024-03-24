@@ -33,6 +33,7 @@ function translateLaunch(locationName) {
 function poprawaMisji(missionName) {
   const misjaPoprawka = {
     "Unknown Payload": "Ładunek nieznany",
+    "Vostochny Angara Test Flight": "Angara Test Flight",
   };
 
   const replacements = {
