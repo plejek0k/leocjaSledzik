@@ -383,6 +383,8 @@ function displayLaunchData(results) {
       czasDiv.className = "czasDiv";
       czasDiv.id = "czasDiv";
 
+
+
       if (stream.className === "las la-video") {
         tippy(stream, {
           content: "<center>Transmisja startu jest dostępna!</center>",
@@ -420,61 +422,73 @@ function displayLaunchData(results) {
         const now = new Date().getTime();
         const launchTime = new Date(result.net).getTime();
         const timeRemaining = launchTime - now;
-
-
-          const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
-          const hours = Math.floor(
-            (timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-          );
-          const minutes = Math.floor(
-            (timeRemaining % (1000 * 60 * 60)) / (1000 * 60)
-          );
-          const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
-
-          const formattedDays = String(days).padStart(2, "0");
-          const formattedHours = String(hours).padStart(2, "0");
-          const formattedMinutes = String(minutes).padStart(2, "0");
-          const formattedSeconds = String(seconds).padStart(2, "0");
-
-          let countdownText = `<p id="czasElement">${formattedDays}:${formattedHours}:${formattedMinutes}:${formattedSeconds}</p>`;
-
-          if (days === 1) {
-            countdownText = `<p id="czasElement">${formattedDays}:${formattedHours}:${formattedMinutes}:${formattedSeconds}</p>`;
-            stream.style.display = "inline-block";
-          } if (days > 2) {
-            countdownText = `<p id="czasElement">Start za ${days} dni</p>`;
-            stream.style.display = "none";
-          } 
-
-          if (statusElement.innerHTML !== "DATA POTWIERDZONA") {
-            countdownText = `<p id="czasElement">${status}</p>`;
-          }
-
-          if (statusElement.innerHTML === "Pomyślny start") {
-            launchElement.style.backgroundImage = `linear-gradient(106deg, rgba(110, 198, 118, 0.6) -0.02%, rgba(110, 72, 170, 0.6) 99.98%), url(${result.image})`;
-          }
-          if (statusElement.innerHTML === "Nieudany start") {
-            launchElement.style.backgroundImage = `linear-gradient(106deg, rgba(183, 65, 65, 0.6) -0.02%, rgba(110, 72, 170, 0.6) 99.98%), url(${result.image})`;
-          }
-          if (statusElement.innerHTML === "CZĘŚCIOWA PORAŻKA") {
-            launchElement.style.backgroundImage = `linear-gradient(106deg, rgba(183, 65, 65, 0.6) -0.02%, rgba(110, 72, 170, 0.6) 99.98%), url(${result.image})`;
-          }
-          if (statusElement.innerHTML === "START WSTRZYMANY") {
-            launchElement.style.backgroundImage = `linear-gradient(106deg, rgba(176, 177, 84, 0.6) -0.02%, rgba(110, 72, 170, 0.6) 99.98%), url(${result.image})`;
-          }
-          if (statusElement.innerHTML === "Lot w trakcie") {
-            launchElement.style.backgroundImage = `linear-gradient(106deg, rgba(88, 69, 96, 0.6) -0.02%, rgba(110, 72, 170, 0.6) 99.98%), url(${result.image})`;
-          }
-          if (statusElement.innerHTML === "Do potwierdzenia") {
-            launchElement.style.backgroundImage = `linear-gradient(106deg, rgba(88, 69, 96, 0.6) -0.02%, rgba(110, 72, 170, 0.6) 99.98%), url(${result.image})`;
-          }
-
-          countdownElement.innerHTML = countdownText;
-        
+      
+        const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+      
+        const formattedDays = String(days).padStart(2, "0");
+        const formattedHours = String(hours).padStart(2, "0");
+        const formattedMinutes = String(minutes).padStart(2, "0");
+        const formattedSeconds = String(seconds).padStart(2, "0");
+      
+        const launchDate = new Date(result.net);
+        const day = launchDate.getDate();
+        const year = launchDate.getFullYear();
+        const monthIndex = launchDate.getMonth();
+        const months = ["stycznia", "lutego", "marca", "kwietnia", "maja", "czerwca", "lipca", "sierpnia", "września", "października", "listopada", "grudnia"];
+        const month = months[monthIndex];
+        const hour = launchDate.getHours();
+        const minute = launchDate.getMinutes();
+        const formatHour = String(hour).padStart(2, "0");
+        const formatSec = String(minute).padStart(2, "0");
+      
+        let countdownText = `<p id="czasElement">${formattedDays}:${formattedHours}:${formattedMinutes}:${formattedSeconds}</p>`;
+      
+        if (days === 1) {
+          countdownText = `<p id="czasElement">${formattedDays}:${formattedHours}:${formattedMinutes}:${formattedSeconds}</p>`;
+          stream.style.display = "inline-block";
+        } if (days > 2) {
+          countdownText = `<p id="czasElement">Start za ${days} dni</p>`;
+          stream.style.display = "none";
+        } 
+      
+        if (statusElement.innerHTML !== "DATA POTWIERDZONA") {
+          countdownText = `<p id="czasElement">${status}</p>`;
+        }
+      
+        if (statusElement.innerHTML === "Pomyślny start") {
+          launchElement.style.backgroundImage = `linear-gradient(106deg, rgba(110, 198, 118, 0.6) -0.02%, rgba(110, 72, 170, 0.6) 99.98%), url(${result.image})`;
+        }
+        if (statusElement.innerHTML === "Nieudany start") {
+          launchElement.style.backgroundImage = `linear-gradient(106deg, rgba(183, 65, 65, 0.6) -0.02%, rgba(110, 72, 170, 0.6) 99.98%), url(${result.image})`;
+        }
+        if (statusElement.innerHTML === "CZĘŚCIOWA PORAŻKA") {
+          launchElement.style.backgroundImage = `linear-gradient(106deg, rgba(183, 65, 65, 0.6) -0.02%, rgba(110, 72, 170, 0.6) 99.98%), url(${result.image})`;
+        }
+        if (statusElement.innerHTML === "START WSTRZYMANY") {
+          launchElement.style.backgroundImage = `linear-gradient(106deg, rgba(176, 177, 84, 0.6) -0.02%, rgba(110, 72, 170, 0.6) 99.98%), url(${result.image})`;
+        }
+        if (statusElement.innerHTML === "Lot w trakcie") {
+          launchElement.style.backgroundImage = `linear-gradient(106deg, rgba(88, 69, 96, 0.6) -0.02%, rgba(110, 72, 170, 0.6) 99.98%), url(${result.image})`;
+        }
+        if (statusElement.innerHTML === "Do potwierdzenia") {
+          launchElement.style.backgroundImage = `linear-gradient(106deg, rgba(88, 69, 96, 0.6) -0.02%, rgba(110, 72, 170, 0.6) 99.98%), url(${result.image})`;
+        }
+      
+        countdownElement.innerHTML = countdownText;
+      
+        // Wywołanie tippy tylko raz
+        tippy(czasDiv, {
+          content: '<center>'+day+` `+month+` `+year+`, `+formatHour+`:`+formatSec+'</center>',
+          placement: "top",
+          allowHTML: true
+        });
       }
-
+      
       updateCountdown();
-      setInterval(updateCountdown, 1000);
+      setInterval(updateCountdown, 1000);      
     }
     
   });
