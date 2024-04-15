@@ -102,14 +102,28 @@ body {
   align-self: flex-end;
   font-size: 2rem;
   color: #fff;
+  display: flex;
   position: absolute;
   margin-right: 10px;
   margin-top: 10px;
+  display: flex;
+  gap: 0.5rem;
 }
 
-#streamIcon:hover {
+#video:hover {
   color: #b967e1;
   transition: 0.2s;
+  cursor: pointer;
+}
+
+#map {
+  color: #fff;
+}
+
+#map:hover {
+  color: #b967e1;
+  transition: 0.2s;
+  cursor: pointer;
 }
 
 #noStreamIcon {
@@ -119,6 +133,8 @@ body {
   position: absolute;
   margin-right: 10px;
   margin-top: 10px;
+  display: flex;
+  gap: 0.5rem;
 }
 
 #czasElement {
