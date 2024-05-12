@@ -19,6 +19,7 @@ function translateLaunch(locationName) {
     "SpaceX Space Launch Facility": "SpaceX Starbase",
     "Vandenberg SFB": "Vandenberg Space Force Base",
     "Onenui Station": "Rocket Lab Launch Complex 1",
+    "Wallops Island": "Mid-Atlantic Regional Spaceport",
   };
   return launchPoprawka[locationName] || locationName;
 }
@@ -31,6 +32,7 @@ function poprawaMisji(missionName) {
 
   const replacements = {
     "Space Mission": "",
+    "CST-100 Starliner Crewed Flight Test": "Boeing Crewed Flight Test",
   };
 
   let dynamicMissionName = missionName;
@@ -231,8 +233,6 @@ function displayLaunchData(results) {
       info.appendChild(rocketNameElement);
       czasDiv.appendChild(countdownElement);
       appDiv.appendChild(launchElement);
-
-      console.log(locationName);
 
       function updateCountdown() {
         const now = new Date().getTime();

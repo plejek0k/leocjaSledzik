@@ -1,23 +1,17 @@
-const leocja = document.getElementById("leocja");
-const edel = document.getElementById("edel");
-const vox = document.getElementById("vox");
-const nor = document.getElementById("nor");
+const github = document.getElementById("github");
+const baza = document.getElementById("baza");
+const staty = document.getElementById("staty");
 
 //kraje
-tippy(leocja, {
-  content: "Palatynat Leocji",
+tippy(github, {
+  content: "Repozytorium Github",
   placement: "bottom",
 });
-tippy(edel, {
-  content: "Kotlina Edelweiss",
+tippy(baza, {
+  content: "Bazy wiedzy (TBD)",
   placement: "bottom",
 });
-tippy(vox, {
-  content: "Królestwo Voxlandu",
+tippy(staty, {
+  content: "Statystyki (TBD)",
   placement: "bottom",
 });
-tippy(nor, {
-  content: "Federacja Nordacka",
-  placement: "bottom",
-});
-
