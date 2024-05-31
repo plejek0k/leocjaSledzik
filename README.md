@@ -10,7 +10,8 @@ created with ❤️ for the Polish virtual state the [Palatinate of Leocia](http
 
 ### Features I am working on
 🧠 knowledge bases\
-🌌 space events from the API\
+📊 launch statistics for each companies\
+🌌 space events from the API
 
 ### Śledzik on the web
 The application should virtually always be available at [sledzik.leocja.org](https://sledzik.leocja.org/)
@@ -20,7 +21,7 @@ The application should virtually always be available at [sledzik.leocja.org](htt
 📝 [tippy.js](https://github.com/atomiks/tippyjs) - tooltips\
 🔔 [line-awesome](https://icons8.com/line-awesome) - icon library\
 💻 Vanilla JS\
-🤓 Vanilla CSS (in the future SCSS)
+🤓 Vanilla CSS
 
 ### License
 [GPL-2.0](https://www.gnu.org/licenses/old-licenses/lgpl-2.0.html#SEC1)
