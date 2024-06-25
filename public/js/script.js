@@ -7,7 +7,7 @@ function getStatusAbbreviation(status) {
     "Launch Successful": "Pomyślny start",
     "Launch Failure": "Nieudany start",
     "On Hold": "START WSTRZYMANY",
-    "Launch in Flight": "LOT w trakcie",
+    "Launch in Flight": "Lot w trakcie",
   };
 
   return statusMap[status] || status;
@@ -20,6 +20,7 @@ function translateLaunch(locationName) {
     "Vandenberg SFB": "Vandenberg Space Force Base",
     "Onenui Station": "Rocket Lab Launch Complex 1",
     "Wallops Island": "Mid-Atlantic Regional Spaceport",
+    "Cape Canaveral": "Cape Canaveral Space Force Station",
   };
   return launchPoprawka[locationName] || locationName;
 }
@@ -143,7 +144,11 @@ function displayLaunchData(results) {
       rocketNameElement.className = "nazwaRakiety";
 
       const missionNameElement = document.createElement("p");
-      missionNameElement.textContent = `${missionName}`;
+      if (missionName === null || missionName === "") {
+        missionNameElement.textContent = "Nie ustalono";
+      } else {
+        missionNameElement.textContent = `${missionName}`;
+      }
       missionNameElement.className = "nazwaMisji";
       missionNameElement.id = "nazwaMisji";
 
