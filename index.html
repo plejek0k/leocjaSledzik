@@ -2,13 +2,24 @@
 <html lang="pl">
 
 <head>
+    <!-- Standard -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="./public/img/icon.png" type="image/x-icon">
+    <title>Śledzik - Twoje RAKIETOWE miejsce w MIKRO!</title>
+    <meta name="description" content="Śledzik to bardzo PROSTY w obsłudze harmonogram najbliższych wydarzeń KOSMICZNYCH!">
+    <meta name="keywords" content="Śledzik, astronautyka, kosmos, rakiety, mikronacje">
     <link rel="stylesheet" href="./public/css/style.css">
+    <!-- Open Graph -->
+    <meta property="og:site_name" content="sledzik.leocja.org" />
     <meta property="og:title" content="Śledzik - Twoje RAKIETOWE miejsce w MIKRONACJACH!">
     <meta property="og:description" content="Śledzik to bardzo PROSTY w obsłudze harmonogram najbliższych wydarzeń KOSMICZNYCH!">
-    <title>Śledzik - Twoje RAKIETOWE miejsce w MIKRO!</title>
+    <meta name="darkreader-lock" content="sledzik.leocja.org" />
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="sledzik.leocja.org" />
+    <meta name="twitter:description" content="Śledzik to bardzo PROSTY w obsłudze harmonogram najbliższych wydarzeń KOSMICZNYCH!" />
+    <!-- JS libs -->
     <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
     <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.min.js"></script>
     <script src="https://unpkg.com/tippy.js@6/dist/tippy-bundle.umd.js"></script>
@@ -25,7 +36,7 @@
             <div class="logoContent">
                 <img src="./public/img/logo.webp">
                 <div class="text">harmonogram najbliższych wydarzeń kosmicznych<br>
-                    API jest dostarczane dzięki <a href="https://thespacedevs.com/llapi">The Space Devs</a><br>
+                    API jest dostarczane przez <a href="https://thespacedevs.com/llapi">The Space Devs</a><br>
                     <span class="copyleft">©</span> <span id="year"></span>
                     <script>document.getElementById("year").innerHTML = new Date().getFullYear();</script>
                     <a href="https://stempel.org.pl/paszport/1095">Plejek</a> all wrongs reserved<br>
@@ -41,7 +52,11 @@
         <div id="app"></div>
         <script src="./public/js/script.js"></script>
         <script src="./public/js/mainTooltips.js"></script>
-        <p class="fot">Dumnie wspierane dzięki uprzejmości <a href="https://forum.leocja.org/viewtopic.php?p=49280&start=99999">Palatynatu Leocji</a>, <a href="https://edelweiss.org.pl/viewtopic.php?f=45&t=903&start=99999">Edelweiss</a>, <a href="https://forum.voxland.org.pl/viewtopic.php?t=516&start=99999">Królewstwa Voxlandu</a>, <a href="https://forum.nordata.pl/topic/1710-federalny-w%C4%85tek-kosmiczny/page/99999/">Federacji Nordackiej</a> oraz <a href="https://fc.sarmacja.org/viewtopic.php?f=1025&p=389889&start=99999">Księstwa Sarmacji</a></p>
+        <p class="fot">Dumnie wspierane dzięki uprzejmości
+            <a href="https://forum.leocja.org/viewtopic.php?p=49280&start=99999">Palatynatu Leocji</a>,
+            <a href="https://edelweiss.org.pl/viewtopic.php?f=45&t=903&start=99999">Edelweiss</a>,
+            <a href="https://forum.nordata.pl/topic/1710-federalny-w%C4%85tek-kosmiczny/page/99999/">Federacji Nordackiej</a>
+            oraz <a href="https://fc.sarmacja.org/viewtopic.php?f=1025&p=389889&start=99999">Księstwa Sarmacji</a></p>
     </main>
 </body>
 
