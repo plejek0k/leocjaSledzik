@@ -1,1 +1,305 @@
-function getStatusAbbreviation(e){return{"To Be Confirmed":"DO POTWIERDZENIA","Go for Launch":"DATA POTWIERDZONA","To Be Determined":"DO USTALENIA","Launch was a Partial Failure":"CZĘŚCIOWA PORAŻKA","Launch Successful":"Pomyślny start","Launch Failure":"Nieudany start","On Hold":"START WSTRZYMANY","Launch in Flight":"Lot w trakcie"}[e]||e}function translateLaunch(e){return{"Air launch to Suborbital flight":"Start w powietrzu","SpaceX Space Launch Facility":"SpaceX Starbase","Vandenberg SFB":"Vandenberg Space Force Base","Onenui Station":"Rocket Lab Launch Complex 1","Wallops Island":"Mid-Atlantic Regional Spaceport","Cape Canaveral":"Cape Canaveral Space Force Station","Pacific Spaceport Complex":"Pacific Spaceport Complex – Alaska"}[e]||e}function poprawaMisji(e){const a={"Unknown Payload":"Ładunek nieznany","Vostochny Angara Test Flight":"Angara Test Flight"},t={"Space Mission":"","CST-100 Starliner Crewed Flight Test":"Boeing Crewed Flight Test"};let n=e;Object.keys(t).forEach((e=>{n=n.replace(new RegExp(e,"g"),t[e])})),n=n.replace(/\bCRS-\d+\b/g,""),n=n.replace(/nk\b Group/g,"nk Grupa"),n=n.replace(/Integrated Flight Test (\d+)/g,"Starhip Flight Test $1");const i=n.replace(/FLTA\d+\s*/,""),r=i.match(/Dragon CRS-2 SpX-(\d+)/);return r?"CRS-"+r[1]:a[e]||i}function skrotAgencji(e){return{"China Aerospace Science and Technology Corporation":"CASC","Indian Space Research Organization":"ISRO","Russian Federal Space Agency (ROSCOSMOS)":"ROSCOSMOS","Russian Space Forces":"Rosyjskie Siły Kosmiczne","United Launch Alliance":"ULA","Mitsubishi Heavy Industries":"MHI"}[e]||e}function brakOrbity(e){return{"N/A":"BRAK INFORMACJI",Sub:"LOT SUBORBITALNY",Elliptical:"ELIPTYCZNA",PO:"POLARNA",LO:"KSIĘŻYCOWA"}[e]||e}function fetchData(){const e=localStorage.getItem("cachedData"),a=localStorage.getItem("cachedTimestamp");if(e){const t=JSON.parse(e);if((new Date).getTime()-a<=9e5)return void displayLaunchData(t.results)}fetch("https://ll.thespacedevs.com/2.2.0/launch/upcoming/?mode=detailed&limit=16").then((e=>e.json())).then((e=>{localStorage.setItem("cachedData",JSON.stringify(e)),localStorage.setItem("cachedTimestamp",(new Date).getTime()),displayLaunchData(e.results)}))}function displayLaunchData(e){const a=document.getElementById("app");a.innerHTML="",e.sort(((e,a)=>new Date(e.net)-new Date(a.net))),e.forEach((e=>{if(e.mission){const n=document.createElement("article");n.className="start",NProgress.start(),n.onloadend=NProgress.done();const i=e.rocket.configuration.name,r=poprawaMisji(e.mission.name.replace(/\(([^)]+)\)/g,""));const c=function(e){const a=e.indexOf("/");return-1!==a?e.substring(0,a):e}(i),o=document.createElement("p");o.textContent=`${c}`,o.className="nazwaRakiety";const l=document.createElement("p");l.textContent=null===r||""===r?"Nie ustalono":`${r}`,l.className="nazwaMisji",l.id="nazwaMisji";const s=getStatusAbbreviation(e.status.name),d=document.createElement("p");d.textContent=`${s}`,d.className="status";const p=translateLaunch(e.pad.location.name.split(",")[0]),g=document.createElement("a");g.className="las la-map-marked-alt",g.id="map",g.href="Start w powietrzu"==p?"https://en.wikipedia.org/wiki/Air_launch":"https://en.wikipedia.org/wiki/"+p,tippy(g,{content:`<center>${p} na Wikipedii</center>`,placement:"top",allowHTML:!0});const u=document.createElement("a");u.className="las la-rocket",u.id="rocketIcon",u.href="https://en.wikipedia.org/wiki/"+i,tippy(u,{content:`<center>${i} na Wikipedii</center>`,placement:"top",allowHTML:!0});const m=document.createElement("a");m.id="streamIcon";const S=document.createElement("div");S.id=`countdown-${e.id}`;const h=document.createElement("div");h.className="info",e.image?n.style.backgroundImage=`linear-gradient(106deg, rgba(157, 80, 187, 0.60) -0.02%, rgba(110, 72, 170, 0.60) 99.98%), url(${e.image})`:n.style.backgroundImage="url(./public/img/brak.png)";const T=document.createElement("div");function t(){const a=(new Date).getTime(),t=new Date(e.net).getTime()-a,i=Math.floor(t/864e5),r=Math.floor(t%864e5/36e5),c=Math.floor(t%36e5/6e4),o=Math.floor(t%6e4/1e3),l=String(i).padStart(2,"0"),p=String(r).padStart(2,"0"),g=String(c).padStart(2,"0"),u=String(o).padStart(2,"0"),m=new Date(e.net),h=m.getDate(),b=m.getFullYear(),A=["stycznia","lutego","marca","kwietnia","maja","czerwca","lipca","sierpnia","września","października","listopada","grudnia"][m.getMonth()],C=m.getHours(),w=m.getMinutes(),k=String(C).padStart(2,"0"),L=String(w).padStart(2,"0");let y=`<p id="czasElement">${l}:${p}:${g}:${u}</p>`;1===i&&(y=`<p id="czasElement">${l}:${p}:${g}:${u}</p>`),i>2&&(y=`<p id="czasElement">Start za ${i} dni</p>`),"DATA POTWIERDZONA"!==d.innerHTML&&(y=`<p id="czasElement">${s}</p>`),"Pomyślny start"===d.innerHTML&&(n.style.backgroundImage=`linear-gradient(106deg, rgba(110, 198, 118, 0.6) -0.02%, rgba(110, 72, 170, 0.6) 99.98%), url(${e.image})`),"Nieudany start"===d.innerHTML&&(n.style.backgroundImage=`linear-gradient(106deg, rgba(183, 65, 65, 0.6) -0.02%, rgba(110, 72, 170, 0.6) 99.98%), url(${e.image})`),"CZĘŚCIOWA PORAŻKA"===d.innerHTML&&(n.style.backgroundImage=`linear-gradient(106deg, rgba(183, 65, 65, 0.6) -0.02%, rgba(110, 72, 170, 0.6) 99.98%), url(${e.image})`),"START WSTRZYMANY"===d.innerHTML&&(n.style.backgroundImage=`linear-gradient(106deg, rgba(176, 177, 84, 0.6) -0.02%, rgba(110, 72, 170, 0.6) 99.98%), url(${e.image})`),"Lot w trakcie"===d.innerHTML&&(n.style.backgroundImage=`linear-gradient(106deg, rgba(88, 69, 96, 0.6) -0.02%, rgba(110, 72, 170, 0.6) 99.98%), url(${e.image})`),"Do potwierdzenia"===d.innerHTML&&(n.style.backgroundImage=`linear-gradient(106deg, rgba(88, 69, 96, 0.6) -0.02%, rgba(110, 72, 170, 0.6) 99.98%), url(${e.image})`),S.innerHTML=y,i<10&&tippy(T,{content:"<center>"+h+" "+A+" "+b+", "+k+":"+L+"</center>",placement:"top",allowHTML:!0})}T.className="czasDiv",T.id="czasDiv",n.appendChild(T),n.appendChild(m),m.appendChild(u),m.appendChild(g),n.appendChild(h),h.appendChild(l),h.appendChild(o),T.appendChild(S),a.appendChild(n),t(),setInterval(t,1e3)}}))}fetchData(),setInterval(fetchData,6e5);
+function getStatusAbbreviation(status) {
+  const statusMap = {
+    "To Be Confirmed": "DO POTWIERDZENIA",
+    "Go for Launch": "DATA POTWIERDZONA",
+    "To Be Determined": "DO USTALENIA",
+    "Launch was a Partial Failure": "CZĘŚCIOWA PORAŻKA",
+    "Launch Successful": "Pomyślny start",
+    "Launch Failure": "Nieudany start",
+    "On Hold": "START WSTRZYMANY",
+    "Launch in Flight": "Lot w trakcie",
+  };
+
+  return statusMap[status] || status;
+}
+
+function translateLaunch(locationName) {
+  const launchPoprawka = {
+    "Air launch to Suborbital flight": "Start w powietrzu",
+    "SpaceX Space Launch Facility": "SpaceX Starbase",
+    "Vandenberg SFB": "Vandenberg Space Force Base",
+    "Onenui Station": "Rocket Lab Launch Complex 1",
+    "Wallops Island": "Mid-Atlantic Regional Spaceport",
+    "Cape Canaveral": "Cape Canaveral Space Force Station",
+    "Pacific Spaceport Complex": "Pacific Spaceport Complex – Alaska",
+  };
+  return launchPoprawka[locationName] || locationName;
+}
+
+function poprawaMisji(missionName) {
+  const misjaPoprawka = {
+    "Unknown Payload": "Ładunek nieznany",
+    "Vostochny Angara Test Flight": "Angara Test Flight",
+  };
+
+  const replacements = {
+    "Space Mission": "",
+    "CST-100 Starliner Crewed Flight Test": "Boeing Crewed Flight Test",
+  };
+
+  let dynamicMissionName = missionName;
+
+  Object.keys(replacements).forEach((key) => {
+    dynamicMissionName = dynamicMissionName.replace(
+      new RegExp(key, "g"),
+      replacements[key]
+    );
+  });
+
+  dynamicMissionName = dynamicMissionName.replace(/\bCRS-\d+\b/g, "");
+  dynamicMissionName = dynamicMissionName.replace(/nk\b Group/g, "nk Grupa");
+  dynamicMissionName = dynamicMissionName.replace(/Integrated Flight Test (\d+)/g, "Starhip Flight Test $1");
+  const missionWithoutFLTA = dynamicMissionName.replace(/FLTA\d+\s*/, "");
+
+  const regex = /Dragon CRS-2 SpX-(\d+)/;
+  const match = missionWithoutFLTA.match(regex);
+
+  if (match) {
+    return "CRS-" + match[1];
+  } else {
+    return misjaPoprawka[missionName] || missionWithoutFLTA;
+  }
+}
+
+function skrotAgencji(agencyInfo) {
+  const poprawkaAgencji = {
+    "China Aerospace Science and Technology Corporation": "CASC",
+    "Indian Space Research Organization": "ISRO",
+    "Russian Federal Space Agency (ROSCOSMOS)": "ROSCOSMOS",
+    "Russian Space Forces": "Rosyjskie Siły Kosmiczne",
+    "United Launch Alliance": "ULA",
+    "Mitsubishi Heavy Industries": "MHI",
+  };
+  return poprawkaAgencji[agencyInfo] || agencyInfo;
+}
+
+function brakOrbity(orbitInfo) {
+  const brakOrbityPoprawka = {
+    "N/A": "BRAK INFORMACJI",
+    Sub: "LOT SUBORBITALNY",
+    Elliptical: "ELIPTYCZNA",
+    PO: "POLARNA",
+    LO: "KSIĘŻYCOWA",
+  };
+  return brakOrbityPoprawka[orbitInfo] || orbitInfo;
+}
+
+function fetchData() {
+  const cachedData = localStorage.getItem("cachedData");
+  const cachedTimestamp = localStorage.getItem("cachedTimestamp");
+
+  if (cachedData) {
+    const parsedData = JSON.parse(cachedData);
+    const currentTime = new Date().getTime();
+
+    if (currentTime - cachedTimestamp <= 15 * 60 * 1000) {
+      displayLaunchData(parsedData.results);
+      return;
+    }
+  }
+
+  const urlRocket = "https://ll.thespacedevs.com/2.2.0/launch/upcoming/?mode=detailed&limit=16";
+
+  fetch(urlRocket)
+    .then((res) => res.json())
+    .then((data) => {
+      localStorage.setItem("cachedData", JSON.stringify(data));
+      localStorage.setItem("cachedTimestamp", new Date().getTime());
+
+      displayLaunchData(data.results);
+    });
+}
+
+function displayLaunchData(results) {
+  const appDiv = document.getElementById("app");
+
+  appDiv.innerHTML = "";
+
+  results.sort((a, b) => new Date(a.net) - new Date(b.net));
+
+  results.forEach((result) => {
+    if (result.mission) {
+      const launchElement = document.createElement("article");
+      launchElement.className = "start";
+      NProgress.start();
+
+      launchElement.onloadend = NProgress.done();
+
+      const rocketName = result.rocket.configuration.name;
+      const missionName = poprawaMisji(
+        result.mission.name.replace(/\(([^)]+)\)/g, "")
+      );
+
+      function removeTextAfterSlash(inputText) {
+        const slashIndex = inputText.indexOf("/");
+        if (slashIndex !== -1) {
+          return inputText.substring(0, slashIndex);
+        } else {
+          return inputText;
+        }
+      }
+
+      const modifiedRocketName = removeTextAfterSlash(rocketName);
+
+      const rocketNameElement = document.createElement("p");
+      rocketNameElement.textContent = `${modifiedRocketName}`;
+      rocketNameElement.className = "nazwaRakiety";
+
+      const missionNameElement = document.createElement("p");
+      if (missionName === null || missionName === "") {
+        missionNameElement.textContent = "Nie ustalono";
+      } else {
+        missionNameElement.textContent = `${missionName}`;
+      }
+      missionNameElement.className = "nazwaMisji";
+      missionNameElement.id = "nazwaMisji";
+
+      const status = getStatusAbbreviation(result.status.name);
+      const statusElement = document.createElement("p");
+      statusElement.textContent = `${status}`;
+      statusElement.className = "status";
+
+      const locationName = translateLaunch(
+        result.pad.location.name.split(",")[0]
+      );
+
+      const map = document.createElement("a");
+      map.className = "las la-map-marked-alt";
+      map.id = "map";
+      if (locationName == "Start w powietrzu") {
+        map.href = "https://en.wikipedia.org/wiki/Air_launch"
+      } else {
+        map.href = "https://en.wikipedia.org/wiki/"+locationName;
+      }
+
+      tippy(map, {
+        content: `<center>${locationName} na Wikipedii</center>`,
+        placement: "top",
+        allowHTML: true
+      });
+
+      const rocketIcon = document.createElement("a");
+      rocketIcon.className = "las la-rocket";
+      rocketIcon.id = "rocketIcon";
+      if (rocketName == "Starship") {
+        rocketIcon.href = "https://en.wikipedia.org/wiki/SpaceX_Starship";
+      } if (rocketName == "Electron") {
+        rocketIcon.href = "https://en.wikipedia.org/wiki/Rocket_Lab_Electron";
+      } else {
+        rocketIcon.href = "https://en.wikipedia.org/wiki/"+rocketName;
+      }
+      
+
+      tippy(rocketIcon, {
+        content: `<center>${rocketName} na Wikipedii</center>`,
+        placement: "top",
+        allowHTML: true
+      });
+
+      const streamHolder = document.createElement("a");
+      streamHolder.id = "streamIcon";
+
+      const countdownElement = document.createElement("div");
+      countdownElement.id = `countdown-${result.id}`;
+      
+      const info = document.createElement("div");
+      info.className = "info";
+
+      if (result.image) {
+        launchElement.style.backgroundImage = `linear-gradient(106deg, rgba(157, 80, 187, 0.60) -0.02%, rgba(110, 72, 170, 0.60) 99.98%), url(${result.image})`;
+      } else {
+        launchElement.style.backgroundImage = "url(./public/img/brak.png)";
+      }
+
+      const czasDiv = document.createElement("div");
+      czasDiv.className = "czasDiv";
+      czasDiv.id = "czasDiv";
+      
+
+      launchElement.appendChild(czasDiv);
+      launchElement.appendChild(streamHolder);
+      streamHolder.appendChild(rocketIcon);
+      streamHolder.appendChild(map);
+      launchElement.appendChild(info);
+      info.appendChild(missionNameElement);
+      info.appendChild(rocketNameElement);
+      czasDiv.appendChild(countdownElement);
+      appDiv.appendChild(launchElement);
+
+      function updateCountdown() {
+        const now = new Date().getTime();
+        const launchTime = new Date(result.net).getTime();
+        const timeRemaining = launchTime - now;
+      
+        const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+      
+        const formattedDays = String(days).padStart(2, "0");
+        const formattedHours = String(hours).padStart(2, "0");
+        const formattedMinutes = String(minutes).padStart(2, "0");
+        const formattedSeconds = String(seconds).padStart(2, "0");
+      
+        const launchDate = new Date(result.net);
+        const day = launchDate.getDate();
+        const year = launchDate.getFullYear();
+        const monthIndex = launchDate.getMonth();
+        const months = ["stycznia", "lutego", "marca", "kwietnia", "maja", "czerwca", "lipca", "sierpnia", "września", "października", "listopada", "grudnia"];
+        const month = months[monthIndex];
+        const hour = launchDate.getHours();
+        const minute = launchDate.getMinutes();
+        const formatHour = String(hour).padStart(2, "0");
+        const formatSec = String(minute).padStart(2, "0");
+      
+        let countdownText = `<p id="czasElement">${formattedDays}:${formattedHours}:${formattedMinutes}:${formattedSeconds}</p>`;
+      
+        if (days === 1) {
+          countdownText = `<p id="czasElement">${formattedDays}:${formattedHours}:${formattedMinutes}:${formattedSeconds}</p>`;
+          //rocketIcon.style.display = "inline-block";
+        } if (days > 2) {
+          countdownText = `<p id="czasElement">Start za ${days} dni</p>`;
+        } 
+      
+        if (statusElement.innerHTML !== "DATA POTWIERDZONA") {
+          countdownText = `<p id="czasElement">${status}</p>`;
+        }
+      
+        if (statusElement.innerHTML === "Pomyślny start") {
+          launchElement.style.backgroundImage = `linear-gradient(106deg, rgba(110, 198, 118, 0.6) -0.02%, rgba(110, 72, 170, 0.6) 99.98%), url(${result.image})`;
+        }
+        if (statusElement.innerHTML === "Nieudany start") {
+          launchElement.style.backgroundImage = `linear-gradient(106deg, rgba(183, 65, 65, 0.6) -0.02%, rgba(110, 72, 170, 0.6) 99.98%), url(${result.image})`;
+        }
+        if (statusElement.innerHTML === "CZĘŚCIOWA PORAŻKA") {
+          launchElement.style.backgroundImage = `linear-gradient(106deg, rgba(183, 65, 65, 0.6) -0.02%, rgba(110, 72, 170, 0.6) 99.98%), url(${result.image})`;
+        }
+        if (statusElement.innerHTML === "START WSTRZYMANY") {
+          launchElement.style.backgroundImage = `linear-gradient(106deg, rgba(176, 177, 84, 0.6) -0.02%, rgba(110, 72, 170, 0.6) 99.98%), url(${result.image})`;
+        }
+        if (statusElement.innerHTML === "Lot w trakcie") {
+          launchElement.style.backgroundImage = `linear-gradient(106deg, rgba(88, 69, 96, 0.6) -0.02%, rgba(110, 72, 170, 0.6) 99.98%), url(${result.image})`;
+        }
+        if (statusElement.innerHTML === "Do potwierdzenia") {
+          launchElement.style.backgroundImage = `linear-gradient(106deg, rgba(88, 69, 96, 0.6) -0.02%, rgba(110, 72, 170, 0.6) 99.98%), url(${result.image})`;
+        }
+      
+        countdownElement.innerHTML = countdownText;
+        if (days < 10) {
+          tippy(czasDiv, {
+            content: '<center>'+day+` `+month+` `+year+`, `+formatHour+`:`+formatSec+'</center>',
+            placement: "top",
+            allowHTML: true
+          });
+        } 
+      }
+      
+      updateCountdown();
+      setInterval(updateCountdown, 1000);      
+    }
+    
+  });
+}
+
+fetchData();
+setInterval(fetchData, 10 * 60 * 1000);
