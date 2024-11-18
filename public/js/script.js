@@ -251,7 +251,14 @@ function displayLaunchData(results) {
         const minute = launchDate.getMinutes();
         const formatHour = String(hour).padStart(2, "0");
         const formatSec = String(minute).padStart(2, "0");
-      
+        
+        let czasElement = document.getElementById("czasElement");
+        if (!czasElement) {
+          czasElement = document.createElement("p");
+          czasElement.id = "czasElement";
+          countdownElement.appendChild(czasElement);
+        }
+        
         let countdownText = `<p id="czasElement">${formattedDays}:${formattedHours}:${formattedMinutes}:${formattedSeconds}</p>`;
       
         if (days === 1) {
