@@ -1,311 +1,267 @@
-function getStatusAbbreviation(status) {
-  const statusMap = {
-    "To Be Confirmed": "DO POTWIERDZENIA",
-    "Go for Launch": "DATA POTWIERDZONA",
-    "To Be Determined": "DO USTALENIA",
-    "Launch was a Partial Failure": "CZĘŚCIOWA PORAŻKA",
-    "Launch Successful": "Pomyślny start",
-    "Launch Failure": "Nieudany start",
-    "On Hold": "START WSTRZYMANY",
-    "Launch in Flight": "Lot w trakcie",
-  };
+const StatusMap = {
+  "To Be Confirmed": "DO POTWIERDZENIA",
+  "Go for Launch": "DATA POTWIERDZONA",
+  "To Be Determined": "DO USTALENIA",
+  "Launch was a Partial Failure": "CZĘŚCIOWA PORAŻKA",
+  "On Hold": "START WSTRZYMANY",
+  "Launch Successful": "Pomyślny start",
+  "Launch Failure": "Nieudany start",
+  "Launch in Flight": "Lot w trakcie",
+};
 
-  return statusMap[status] || status;
+const LaunchLocationMap = {
+  "Air launch to Suborbital flight": "Start w powietrzu",
+  "SpaceX Space Launch Facility": "SpaceX Starbase",
+  "Vandenberg SFB": "Vandenberg Space Force Base",
+  "Onenui Station": "Rocket Lab Launch Complex 1",
+  "Wallops Island": "Mid-Atlantic Regional Spaceport",
+  "Cape Canaveral": "Cape Canaveral Space Force Station",
+  "Pacific Spaceport Complex": "Pacific Spaceport Complex – Alaska",
+};
+
+const MissionReplacements = {
+  "Unknown Payload": "Ładunek nieznany",
+  "Vostochny Angara Test Flight": "Angara Test Flight",
+  "Space Mission": "",
+  "CST-100 Starliner Crewed Flight Test": "Boeing Crewed Flight Test",
+};
+
+const rocketReplacement = {
+  "Smart Dragon 1": "Jielong 1",
+  "Smart Dragon 2": "Jielong 2",
+  "Smart Dragon 3": "Jielong 3",
+}
+
+const AgencyShortNames = {
+  "China Aerospace Science and Technology Corporation": "CASC",
+  "Indian Space Research Organization": "ISRO",
+  "Russian Federal Space Agency (ROSCOSMOS)": "ROSCOSMOS",
+  "Russian Space Forces": "Rosyjskie Siły Kosmiczne",
+  "United Launch Alliance": "ULA",
+  "Mitsubishi Heavy Industries": "MHI",
+};
+
+const OrbitMap = {
+  "N/A": "BRAK INFORMACJI",
+  "Sub": "LOT SUBORBITALNY",
+  "Elliptical": "ELIPTYCZNA",
+  "PO": "POLARNA",
+  "LO": "KSIĘŻYCOWA",
+};
+
+function getStatusAbbreviation(status) {
+  return StatusMap[status] || status;
 }
 
 function translateLaunch(locationName) {
-  const launchPoprawka = {
-    "Air launch to Suborbital flight": "Start w powietrzu",
-    "SpaceX Space Launch Facility": "SpaceX Starbase",
-    "Vandenberg SFB": "Vandenberg Space Force Base",
-    "Onenui Station": "Rocket Lab Launch Complex 1",
-    "Wallops Island": "Mid-Atlantic Regional Spaceport",
-    "Cape Canaveral": "Cape Canaveral Space Force Station",
-    "Pacific Spaceport Complex": "Pacific Spaceport Complex – Alaska",
-  };
-  return launchPoprawka[locationName] || locationName;
+  return LaunchLocationMap[locationName] || locationName;
+}
+
+function getRocketReplacement(rocketName) {
+  return rocketReplacement[rocketName] || rocketName;
 }
 
 function poprawaMisji(missionName) {
-  const misjaPoprawka = {
-    "Unknown Payload": "Ładunek nieznany",
-    "Vostochny Angara Test Flight": "Angara Test Flight",
-  };
+  let dynamicMissionName = missionName.replace(/\(([^)]+)\)/g, "");
 
-  const replacements = {
-    "Space Mission": "",
-    "CST-100 Starliner Crewed Flight Test": "Boeing Crewed Flight Test",
-  };
-
-  let dynamicMissionName = missionName;
-
-  Object.keys(replacements).forEach((key) => {
-    dynamicMissionName = dynamicMissionName.replace(
-      new RegExp(key, "g"),
-      replacements[key]
-    );
+  Object.entries(MissionReplacements).forEach(([key, value]) => {
+    dynamicMissionName = dynamicMissionName.replace(new RegExp(key, "g"), value);
   });
 
-  dynamicMissionName = dynamicMissionName.replace(/\bCRS-\d+\b/g, "");
-  dynamicMissionName = dynamicMissionName.replace(/nk\b Group/g, "nk Grupa");
-  dynamicMissionName = dynamicMissionName.replace(/Integrated Flight Test (\d+)/g, "Starhip Flight Test $1");
-  const missionWithoutFLTA = dynamicMissionName.replace(/FLTA\d+\s*/, "");
+  dynamicMissionName = dynamicMissionName
+    .replace(/\bCRS-\d+\b/g, "")
+    .replace(/nk\b Group/g, "nk Grupa")
+    .replace(/Integrated Flight Test (\d+)/g, "Starship Flight Test $1")
+    .replace(/Flight (\d+)/g, "Flight $1")
+    .replace(/FLTA\d+\s*/, "");
 
-  const regex = /Dragon CRS-2 SpX-(\d+)/;
-  const match = missionWithoutFLTA.match(regex);
-
-  if (match) {
-    return "CRS-" + match[1];
-  } else {
-    return misjaPoprawka[missionName] || missionWithoutFLTA;
-  }
+  const match = dynamicMissionName.match(/Dragon CRS-2 SpX-(\d+)/);
+  return match ? `CRS-${match[1]}` : dynamicMissionName;
 }
 
 function skrotAgencji(agencyInfo) {
-  const poprawkaAgencji = {
-    "China Aerospace Science and Technology Corporation": "CASC",
-    "Indian Space Research Organization": "ISRO",
-    "Russian Federal Space Agency (ROSCOSMOS)": "ROSCOSMOS",
-    "Russian Space Forces": "Rosyjskie Siły Kosmiczne",
-    "United Launch Alliance": "ULA",
-    "Mitsubishi Heavy Industries": "MHI",
-  };
-  return poprawkaAgencji[agencyInfo] || agencyInfo;
+  return AgencyShortNames[agencyInfo] || agencyInfo;
 }
 
 function brakOrbity(orbitInfo) {
-  const brakOrbityPoprawka = {
-    "N/A": "BRAK INFORMACJI",
-    Sub: "LOT SUBORBITALNY",
-    Elliptical: "ELIPTYCZNA",
-    PO: "POLARNA",
-    LO: "KSIĘŻYCOWA",
-  };
-  return brakOrbityPoprawka[orbitInfo] || orbitInfo;
+  return OrbitMap[orbitInfo] || orbitInfo;
+}
+
+function removeTextAfterSlash(inputText) {
+  const slashIndex = inputText.indexOf("/");
+  return slashIndex !== -1 ? inputText.substring(0, slashIndex) : inputText;
 }
 
 function fetchData() {
   const cachedData = localStorage.getItem("cachedData");
   const cachedTimestamp = localStorage.getItem("cachedTimestamp");
+  const currentTime = new Date().getTime();
 
-  if (cachedData) {
-    const parsedData = JSON.parse(cachedData);
-    const currentTime = new Date().getTime();
-
-    if (currentTime - cachedTimestamp <= 15 * 60 * 1000) {
-      displayLaunchData(parsedData.results);
-      return;
-    }
+  if (cachedData && currentTime - cachedTimestamp <= 15 * 60 * 1000) {
+    displayLaunchData(JSON.parse(cachedData).results);
+    return;
   }
 
-  const urlRocket = "https://ll.thespacedevs.com/2.2.0/launch/upcoming/?mode=detailed&limit=16";
-
-  fetch(urlRocket)
-    .then((res) => res.json())
-    .then((data) => {
+  fetch("https://ll.thespacedevs.com/2.2.0/launch/upcoming/?mode=detailed&limit=16")
+    .then(res => res.json())
+    .then(data => {
       localStorage.setItem("cachedData", JSON.stringify(data));
-      localStorage.setItem("cachedTimestamp", new Date().getTime());
-
+      localStorage.setItem("cachedTimestamp", currentTime);
       displayLaunchData(data.results);
     });
 }
 
+function createLaunchBackground(status, image) {
+  const gradientMap = {
+    "Pomyślny start": "rgba(110, 198, 118, 0.6)",
+    "Nieudany start": "rgba(183, 65, 65, 0.6)",
+    "CZĘŚCIOWA PORAŻKA": "rgba(183, 65, 65, 0.6)",
+    "START WSTRZYMANY": "rgba(176, 177, 84, 0.6)",
+    "Lot w trakcie": "rgba(88, 69, 96, 0.6)",
+    "Do potwierdzenia": "rgba(88, 69, 96, 0.6)"
+  };
+
+  const backgroundColor = gradientMap[status] || "rgba(157, 80, 187, 0.60)";
+  return image 
+    ? `linear-gradient(106deg, ${backgroundColor} -0.02%, rgba(110, 72, 170, 0.60) 99.98%), url(${image})` 
+    : "url(./public/img/brak.png)";
+}
+
+function createWikipediaLink(name, type) {
+  const specialLinks = {
+    rocket: {
+      "Starship": "https://en.wikipedia.org/wiki/SpaceX_Starship",
+      "Electron": "https://en.wikipedia.org/wiki/Rocket_Lab_Electron",
+      "H3-22": "https://en.wikipedia.org/wiki/H3_(rocket)",
+    },
+    location: {
+      "Start w powietrzu": "https://en.wikipedia.org/wiki/Air_launch"
+    }
+  };
+
+  const specialLink = specialLinks[type]?.[name];
+  return specialLink || `https://en.wikipedia.org/wiki/${name}`;
+}
+
 function displayLaunchData(results) {
   const appDiv = document.getElementById("app");
-
   appDiv.innerHTML = "";
 
-  results.sort((a, b) => new Date(a.net) - new Date(b.net));
-
-  results.forEach((result) => {
-    if (result.mission) {
-      const launchElement = document.createElement("article");
-      launchElement.className = "start";
+  results
+    .filter(result => result.mission)
+    .sort((a, b) => new Date(a.net) - new Date(b.net))
+    .forEach(result => {
       NProgress.start();
 
+      const launchElement = document.createElement("article");
+      launchElement.className = "start";
       launchElement.onloadend = NProgress.done();
 
-      const rocketName = result.rocket.configuration.name;
-      const missionName = poprawaMisji(
-        result.mission.name.replace(/\(([^)]+)\)/g, "")
-      );
+      const rocketName = removeTextAfterSlash(result.rocket.configuration.name);
+      const upgradedRocketName = getRocketReplacement(rocketName);
 
-      function removeTextAfterSlash(inputText) {
-        const slashIndex = inputText.indexOf("/");
-        if (slashIndex !== -1) {
-          return inputText.substring(0, slashIndex);
-        } else {
-          return inputText;
-        }
-      }
-
-      const modifiedRocketName = removeTextAfterSlash(rocketName);
-
-      const rocketNameElement = document.createElement("p");
-      rocketNameElement.textContent = `${modifiedRocketName}`;
-      rocketNameElement.className = "nazwaRakiety";
-
-      const missionNameElement = document.createElement("p");
-      if (missionName === null || missionName === "") {
-        missionNameElement.textContent = "Nie ustalono";
-      } else {
-        missionNameElement.textContent = `${missionName}`;
-      }
-      missionNameElement.className = "nazwaMisji";
-      missionNameElement.id = "nazwaMisji";
-
+      const missionName = poprawaMisji(result.mission.name);
       const status = getStatusAbbreviation(result.status.name);
-      const statusElement = document.createElement("p");
-      statusElement.textContent = `${status}`;
-      statusElement.className = "status";
+      const locationName = translateLaunch(result.pad.location.name.split(",")[0]);
 
-      const locationName = translateLaunch(
-        result.pad.location.name.split(",")[0]
-      );
+      launchElement.style.backgroundImage = createLaunchBackground(status, result.image);
 
-      const map = document.createElement("a");
-      map.className = "las la-map-marked-alt";
-      map.id = "map";
-      if (locationName == "Start w powietrzu") {
-        map.href = "https://en.wikipedia.org/wiki/Air_launch"
-      } else {
-        map.href = "https://en.wikipedia.org/wiki/"+locationName;
-      }
+      const createTextElement = (text, className) => {
+        const element = document.createElement("p");
+        element.textContent = text || "Nie ustalono";
+        element.className = className;
+        return element;
+      };
 
-      tippy(map, {
-        content: `<center>${locationName} na Wikipedii</center>`,
-        placement: "top",
-        allowHTML: true
-      });
+      const rocketNameElement = createTextElement(upgradedRocketName, "nazwaRakiety");
+      const missionNameElement = createTextElement(missionName, "nazwaMisji");
+      missionNameElement.id = "nazwaMisji";
+      const statusElement = createTextElement(status, "status");
 
-      const rocketIcon = document.createElement("a");
-      rocketIcon.className = "las la-rocket";
+      const createWikipediaIcon = (className, linkText, type) => {
+        const icon = document.createElement("a");
+        icon.className = className;
+        icon.href = createWikipediaLink(linkText, type);
+
+        tippy(icon, {
+          content: `<center>${linkText} na Wikipedii</center>`,
+          placement: "top",
+          allowHTML: true
+        });
+
+        return icon;
+      };
+
+      const mapIcon = createWikipediaIcon("las la-map-marked-alt", locationName, "location");
+      mapIcon.id = "map";
+
+      const rocketIcon = createWikipediaIcon("las la-rocket", upgradedRocketName, "rocket");
       rocketIcon.id = "rocketIcon";
-      if (rocketName == "Starship") {
-        rocketIcon.href = "https://en.wikipedia.org/wiki/SpaceX_Starship";
-      } if (rocketName == "Electron") {
-        rocketIcon.href = "https://en.wikipedia.org/wiki/Rocket_Lab_Electron";
-      } else {
-        rocketIcon.href = "https://en.wikipedia.org/wiki/"+rocketName;
-      }
-      
-
-      tippy(rocketIcon, {
-        content: `<center>${rocketName} na Wikipedii</center>`,
-        placement: "top",
-        allowHTML: true
-      });
 
       const streamHolder = document.createElement("a");
       streamHolder.id = "streamIcon";
-
       const countdownElement = document.createElement("div");
       countdownElement.id = `countdown-${result.id}`;
-      
+
       const info = document.createElement("div");
       info.className = "info";
-
-      if (result.image) {
-        launchElement.style.backgroundImage = `linear-gradient(106deg, rgba(157, 80, 187, 0.60) -0.02%, rgba(110, 72, 170, 0.60) 99.98%), url(${result.image})`;
-      } else {
-        launchElement.style.backgroundImage = "url(./public/img/brak.png)";
-      }
-
+      
       const czasDiv = document.createElement("div");
       czasDiv.className = "czasDiv";
       czasDiv.id = "czasDiv";
-      
 
-      launchElement.appendChild(czasDiv);
-      launchElement.appendChild(streamHolder);
-      streamHolder.appendChild(rocketIcon);
-      streamHolder.appendChild(map);
-      launchElement.appendChild(info);
-      info.appendChild(missionNameElement);
-      info.appendChild(rocketNameElement);
+      streamHolder.append(rocketIcon, mapIcon);
+      info.append(missionNameElement, rocketNameElement);
       czasDiv.appendChild(countdownElement);
+      
+      launchElement.append(czasDiv, streamHolder, info);
       appDiv.appendChild(launchElement);
 
       function updateCountdown() {
         const now = new Date().getTime();
         const launchTime = new Date(result.net).getTime();
         const timeRemaining = launchTime - now;
-      
+
         const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
         const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
-      
-        const formattedDays = String(days).padStart(2, "0");
-        const formattedHours = String(hours).padStart(2, "0");
-        const formattedMinutes = String(minutes).padStart(2, "0");
-        const formattedSeconds = String(seconds).padStart(2, "0");
-      
+
+        const padZero = num => String(num).padStart(2, "0");
+        const formatTime = [days, hours, minutes, seconds].map(padZero);
+
         const launchDate = new Date(result.net);
-        const day = launchDate.getDate();
-        const year = launchDate.getFullYear();
-        const monthIndex = launchDate.getMonth();
         const months = ["stycznia", "lutego", "marca", "kwietnia", "maja", "czerwca", "lipca", "sierpnia", "września", "października", "listopada", "grudnia"];
-        const month = months[monthIndex];
-        const hour = launchDate.getHours();
-        const minute = launchDate.getMinutes();
-        const formatHour = String(hour).padStart(2, "0");
-        const formatSec = String(minute).padStart(2, "0");
-        
-        let czasElement = document.getElementById("czasElement");
-        if (!czasElement) {
-          czasElement = document.createElement("p");
-          czasElement.id = "czasElement";
-          countdownElement.appendChild(czasElement);
-        }
-        
-        let countdownText = `<p id="czasElement">${formattedDays}:${formattedHours}:${formattedMinutes}:${formattedSeconds}</p>`;
-      
-        if (days === 1) {
-          countdownText = `<p id="czasElement">${formattedDays}:${formattedHours}:${formattedMinutes}:${formattedSeconds}</p>`;
-          //rocketIcon.style.display = "inline-block";
-        } if (days > 2) {
+
+        let countdownText = `<p id="czasElement">${formatTime.join(':')}</p>`;
+
+        if (days > 2) {
           countdownText = `<p id="czasElement">Start za ${days} dni</p>`;
-        } 
-      
+        }
+
         if (statusElement.innerHTML !== "DATA POTWIERDZONA") {
           countdownText = `<p id="czasElement">${status}</p>`;
         }
-      
-        if (statusElement.innerHTML === "Pomyślny start") {
-          launchElement.style.backgroundImage = `linear-gradient(106deg, rgba(110, 198, 118, 0.6) -0.02%, rgba(110, 72, 170, 0.6) 99.98%), url(${result.image})`;
+
+        if (!document.getElementById("czasElement")) {
+          const czasElement = document.createElement("p");
+          czasElement.id = "czasElement";
+          countdownElement.appendChild(czasElement);
         }
-        if (statusElement.innerHTML === "Nieudany start") {
-          launchElement.style.backgroundImage = `linear-gradient(106deg, rgba(183, 65, 65, 0.6) -0.02%, rgba(110, 72, 170, 0.6) 99.98%), url(${result.image})`;
-        }
-        if (statusElement.innerHTML === "CZĘŚCIOWA PORAŻKA") {
-          launchElement.style.backgroundImage = `linear-gradient(106deg, rgba(183, 65, 65, 0.6) -0.02%, rgba(110, 72, 170, 0.6) 99.98%), url(${result.image})`;
-        }
-        if (statusElement.innerHTML === "START WSTRZYMANY") {
-          launchElement.style.backgroundImage = `linear-gradient(106deg, rgba(176, 177, 84, 0.6) -0.02%, rgba(110, 72, 170, 0.6) 99.98%), url(${result.image})`;
-        }
-        if (statusElement.innerHTML === "Lot w trakcie") {
-          launchElement.style.backgroundImage = `linear-gradient(106deg, rgba(88, 69, 96, 0.6) -0.02%, rgba(110, 72, 170, 0.6) 99.98%), url(${result.image})`;
-        }
-        if (statusElement.innerHTML === "Do potwierdzenia") {
-          launchElement.style.backgroundImage = `linear-gradient(106deg, rgba(88, 69, 96, 0.6) -0.02%, rgba(110, 72, 170, 0.6) 99.98%), url(${result.image})`;
-        }
-      
         countdownElement.innerHTML = countdownText;
+
         if (days < 10) {
           tippy(czasDiv, {
-            content: '<center>'+day+` `+month+` `+year+`, `+formatHour+`:`+formatSec+'</center>',
+            content: `<center>${launchDate.getDate()} ${months[launchDate.getMonth()]} ${launchDate.getFullYear()}, ${padZero(launchDate.getHours())}:${padZero(launchDate.getMinutes())}</center>`,
             placement: "top",
             allowHTML: true
           });
-        } 
+        }
       }
-      
+
       updateCountdown();
-      setInterval(updateCountdown, 1000);      
-    }
-    
-  });
+      setInterval(updateCountdown, 1000);
+    });
 }
 
 fetchData();
