@@ -1,3 +1,5 @@
+const mapValue = (map, key) => map[key] || key;
+
 const StatusMap = {
   "To Be Confirmed": "DO POTWIERDZENIA",
   "Go for Launch": "DATA POTWIERDZONA",
@@ -26,11 +28,11 @@ const MissionReplacements = {
   "CST-100 Starliner Crewed Flight Test": "Boeing Crewed Flight Test",
 };
 
-const rocketReplacement = {
+const RocketMap = {
   "Smart Dragon 1": "Jielong 1",
   "Smart Dragon 2": "Jielong 2",
-  "Smart Dragon 3": "Jielong 3",
-}
+  "Smart Dragon 3": "Jielong 3"
+};
 
 const AgencyShortNames = {
   "China Aerospace Science and Technology Corporation": "CASC",
@@ -49,48 +51,34 @@ const OrbitMap = {
   "LO": "KSIĘŻYCOWA",
 };
 
-function getStatusAbbreviation(status) {
-  return StatusMap[status] || status;
-}
+const renameRocket = (name) => mapValue(RocketMap, name).replace(/Long March (\d+)/g, "Chang Zheng $1");
 
-function translateLaunch(locationName) {
-  return LaunchLocationMap[locationName] || locationName;
-}
+const poprawaMisji = (missionName) => {
+  let updated = missionName.replace(/\(([^)]+)\)/g, "");
 
-function getRocketReplacement(rocketName) {
-  return rocketReplacement[rocketName] || rocketName;
-}
+  updated = Object.entries(MissionReplacements).reduce(
+    (acc, [key, value]) => acc.replace(new RegExp(key, "g"), value),
+    updated
+  );
 
-function poprawaMisji(missionName) {
-  let dynamicMissionName = missionName.replace(/\(([^)]+)\)/g, "");
-
-  Object.entries(MissionReplacements).forEach(([key, value]) => {
-    dynamicMissionName = dynamicMissionName.replace(new RegExp(key, "g"), value);
-  });
-
-  dynamicMissionName = dynamicMissionName
+  updated = updated
     .replace(/\bCRS-\d+\b/g, "")
     .replace(/nk\b Group/g, "nk Grupa")
     .replace(/Integrated Flight Test (\d+)/g, "Starship Flight Test $1")
     .replace(/Flight (\d+)/g, "Flight $1")
     .replace(/FLTA\d+\s*/, "");
 
-  const match = dynamicMissionName.match(/Dragon CRS-2 SpX-(\d+)/);
-  return match ? `CRS-${match[1]}` : dynamicMissionName;
-}
+  const match = updated.match(/Dragon CRS-2 SpX-(\d+)/);
+  return match ? `CRS-${match[1]}` : updated;
+};
 
-function skrotAgencji(agencyInfo) {
-  return AgencyShortNames[agencyInfo] || agencyInfo;
-}
+const removeTextAfterSlash = (text) => text.split("/")[0];
 
-function brakOrbity(orbitInfo) {
-  return OrbitMap[orbitInfo] || orbitInfo;
-}
-
-function removeTextAfterSlash(inputText) {
-  const slashIndex = inputText.indexOf("/");
-  return slashIndex !== -1 ? inputText.substring(0, slashIndex) : inputText;
-}
+const getStatusAbbreviation = (status) => mapValue(StatusMap, status);
+const translateLaunch = (location) => mapValue(LaunchLocationMap, location);
+const getRocketReplacement = (rocket) => renameRocket(rocket);
+const skrotAgencji = (agency) => mapValue(AgencyShortNames, agency);
+const brakOrbity = (orbit) => mapValue(OrbitMap, orbit);
 
 function fetchData() {
   const cachedData = localStorage.getItem("cachedData");
@@ -133,6 +121,8 @@ function createWikipediaLink(name, type) {
       "Starship": "https://en.wikipedia.org/wiki/SpaceX_Starship",
       "Electron": "https://en.wikipedia.org/wiki/Rocket_Lab_Electron",
       "H3-22": "https://en.wikipedia.org/wiki/H3_(rocket)",
+      "Spectrum": "https://en.wikipedia.org/wiki/Isar_Aerospace_Spectrum",
+
     },
     location: {
       "Start w powietrzu": "https://en.wikipedia.org/wiki/Air_launch"
