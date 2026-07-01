@@ -51,6 +51,12 @@ const OrbitMap = {
   "LO": "KSIĘŻYCOWA",
 };
 
+const months = ["stycznia", "lutego", "marca", "kwietnia", "maja", "czerwca", "lipca", "sierpnia", "września", "października", "listopada", "grudnia"];
+const padZero = (num) => String(num).padStart(2, "0");
+const launchCards = [];
+let countdownTimerId = null;
+let isFetching = false;
+
 const renameRocket = (name) => mapValue(RocketMap, name).replace(/Long March (\d+)/g, "Chang Zheng $1");
 
 const poprawaMisji = (missionName) => {
@@ -81,21 +87,37 @@ const skrotAgencji = (agency) => mapValue(AgencyShortNames, agency);
 const brakOrbity = (orbit) => mapValue(OrbitMap, orbit);
 
 function fetchData() {
+  if (isFetching) {
+    return;
+  }
+
+  isFetching = true;
   const cachedData = localStorage.getItem("cachedData");
   const cachedTimestamp = localStorage.getItem("cachedTimestamp");
   const currentTime = new Date().getTime();
 
-  if (cachedData && currentTime - cachedTimestamp <= 15 * 60 * 1000) {
+  if (cachedData && cachedTimestamp && currentTime - Number(cachedTimestamp) <= 15 * 60 * 1000) {
     displayLaunchData(JSON.parse(cachedData).results);
+    isFetching = false;
     return;
   }
 
+  NProgress.start();
   fetch("https://ll.thespacedevs.com/2.2.0/launch/upcoming/?mode=detailed&limit=16")
-    .then(res => res.json())
-    .then(data => {
+    .then((res) => res.json())
+    .then((data) => {
       localStorage.setItem("cachedData", JSON.stringify(data));
-      localStorage.setItem("cachedTimestamp", currentTime);
+      localStorage.setItem("cachedTimestamp", String(currentTime));
       displayLaunchData(data.results);
+    })
+    .catch(() => {
+      if (cachedData) {
+        displayLaunchData(JSON.parse(cachedData).results);
+      }
+    })
+    .finally(() => {
+      isFetching = false;
+      NProgress.done();
     });
 }
 
@@ -110,8 +132,8 @@ function createLaunchBackground(status, image) {
   };
 
   const backgroundColor = gradientMap[status] || "rgba(157, 80, 187, 0.60)";
-  return image 
-    ? `linear-gradient(106deg, ${backgroundColor} -0.02%, rgba(110, 72, 170, 0.60) 99.98%), url(${image})` 
+  return image
+    ? `linear-gradient(106deg, ${backgroundColor} -0.02%, rgba(110, 72, 170, 0.60) 99.98%), url(${image})`
     : "url(./public/img/brak.png)";
 }
 
@@ -122,7 +144,6 @@ function createWikipediaLink(name, type) {
       "Electron": "https://en.wikipedia.org/wiki/Rocket_Lab_Electron",
       "H3-22": "https://en.wikipedia.org/wiki/H3_(rocket)",
       "Spectrum": "https://en.wikipedia.org/wiki/Isar_Aerospace_Spectrum",
-
     },
     location: {
       "Start w powietrzu": "https://en.wikipedia.org/wiki/Air_launch"
@@ -133,40 +154,94 @@ function createWikipediaLink(name, type) {
   return specialLink || `https://en.wikipedia.org/wiki/${name}`;
 }
 
+function createTextElement(text, className) {
+  const element = document.createElement("p");
+  element.textContent = text || "Nie ustalono";
+  element.className = className;
+  return element;
+}
+
+function updateCountdown(cardState) {
+  const now = new Date().getTime();
+  const launchTime = new Date(cardState.result.net).getTime();
+  const timeRemaining = launchTime - now;
+
+  const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+  const formatTime = [days, hours, minutes, seconds].map(padZero);
+
+  let countdownText = formatTime.join(":");
+  if (days > 2 && cardState.status === "DATA POTWIERDZONA") {
+    countdownText = `Start za ${days} dni`;
+  }
+
+  if (cardState.status !== "DATA POTWIERDZONA") {
+    countdownText = cardState.status;
+  }
+
+  let timeElement = cardState.countdownElement.querySelector("#czasElement");
+  if (!timeElement) {
+    timeElement = document.createElement("p");
+    timeElement.id = "czasElement";
+    cardState.countdownElement.appendChild(timeElement);
+  }
+
+  if (timeElement.textContent !== countdownText) {
+    timeElement.textContent = countdownText;
+  }
+
+  if (days < 10 && cardState.status === "DATA POTWIERDZONA") {
+    const tooltipLabel = `${cardState.launchDate.getDate()} ${months[cardState.launchDate.getMonth()]} ${cardState.launchDate.getFullYear()}, ${padZero(cardState.launchDate.getHours())}:${padZero(cardState.launchDate.getMinutes())}`;
+    const tooltipContent = `<center>${tooltipLabel}</center>`;
+
+    if (!cardState.tooltip) {
+      cardState.tooltip = tippy(cardState.czasDiv, {
+        content: tooltipContent,
+        placement: "top",
+        allowHTML: true
+      });
+    } else if (cardState.tooltipContent !== tooltipContent) {
+      cardState.tooltip.setContent(tooltipContent);
+    }
+
+    cardState.tooltipContent = tooltipContent;
+  } else if (cardState.tooltip) {
+    cardState.tooltip.destroy();
+    cardState.tooltip = null;
+    cardState.tooltipContent = "";
+  }
+}
+
+function updateAllCountdowns() {
+  launchCards.forEach(updateCountdown);
+}
+
 function displayLaunchData(results) {
   const appDiv = document.getElementById("app");
-  appDiv.innerHTML = "";
+  const fragment = document.createDocumentFragment();
+
+  launchCards.length = 0;
 
   results
-    .filter(result => result.mission)
+    .filter((result) => result.mission)
     .sort((a, b) => new Date(a.net) - new Date(b.net))
-    .forEach(result => {
-      NProgress.start();
-
+    .forEach((result) => {
       const launchElement = document.createElement("article");
       launchElement.className = "start";
-      launchElement.onloadend = NProgress.done();
 
       const rocketName = removeTextAfterSlash(result.rocket.configuration.name);
       const upgradedRocketName = getRocketReplacement(rocketName);
-
       const missionName = poprawaMisji(result.mission.name);
       const status = getStatusAbbreviation(result.status.name);
       const locationName = translateLaunch(result.pad.location.name.split(",")[0]);
 
       launchElement.style.backgroundImage = createLaunchBackground(status, result.image);
 
-      const createTextElement = (text, className) => {
-        const element = document.createElement("p");
-        element.textContent = text || "Nie ustalono";
-        element.className = className;
-        return element;
-      };
-
       const rocketNameElement = createTextElement(upgradedRocketName, "nazwaRakiety");
       const missionNameElement = createTextElement(missionName, "nazwaMisji");
       missionNameElement.id = "nazwaMisji";
-      const statusElement = createTextElement(status, "status");
 
       const createWikipediaIcon = (className, linkText, type) => {
         const icon = document.createElement("a");
@@ -195,7 +270,7 @@ function displayLaunchData(results) {
 
       const info = document.createElement("div");
       info.className = "info";
-      
+
       const czasDiv = document.createElement("div");
       czasDiv.className = "czasDiv";
       czasDiv.id = "czasDiv";
@@ -203,56 +278,29 @@ function displayLaunchData(results) {
       streamHolder.append(rocketIcon, mapIcon);
       info.append(missionNameElement, rocketNameElement);
       czasDiv.appendChild(countdownElement);
-      
+
       launchElement.append(czasDiv, streamHolder, info);
-      appDiv.appendChild(launchElement);
+      fragment.appendChild(launchElement);
 
-      function updateCountdown() {
-        const now = new Date().getTime();
-        const launchTime = new Date(result.net).getTime();
-        const timeRemaining = launchTime - now;
-
-        const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
-
-        const padZero = num => String(num).padStart(2, "0");
-        const formatTime = [days, hours, minutes, seconds].map(padZero);
-
-        const launchDate = new Date(result.net);
-        const months = ["stycznia", "lutego", "marca", "kwietnia", "maja", "czerwca", "lipca", "sierpnia", "września", "października", "listopada", "grudnia"];
-
-        let countdownText = `<p id="czasElement">${formatTime.join(':')}</p>`;
-
-        if (days > 2) {
-          countdownText = `<p id="czasElement">Start za ${days} dni</p>`;
-        }
-
-        if (statusElement.innerHTML !== "DATA POTWIERDZONA") {
-          countdownText = `<p id="czasElement">${status}</p>`;
-        }
-
-        if (!document.getElementById("czasElement")) {
-          const czasElement = document.createElement("p");
-          czasElement.id = "czasElement";
-          countdownElement.appendChild(czasElement);
-        }
-        countdownElement.innerHTML = countdownText;
-
-        if (days < 10) {
-          tippy(czasDiv, {
-            content: `<center>${launchDate.getDate()} ${months[launchDate.getMonth()]} ${launchDate.getFullYear()}, ${padZero(launchDate.getHours())}:${padZero(launchDate.getMinutes())}</center>`,
-            placement: "top",
-            allowHTML: true
-          });
-        }
-      }
-
-      updateCountdown();
-      setInterval(updateCountdown, 1000);
+      launchCards.push({
+        element: launchElement,
+        result,
+        status,
+        countdownElement,
+        czasDiv,
+        launchDate: new Date(result.net),
+        tooltip: null,
+        tooltipContent: ""
+      });
     });
+
+  appDiv.replaceChildren(fragment);
+  launchCards.forEach(updateCountdown);
+
+  if (!countdownTimerId) {
+    countdownTimerId = window.setInterval(updateAllCountdowns, 1000);
+  }
 }
 
 fetchData();
-setInterval(fetchData, 10 * 60 * 1000);
+window.setInterval(fetchData, 10 * 60 * 1000);
