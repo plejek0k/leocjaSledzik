@@ -12,6 +12,6 @@ tippy(baza, {
   placement: "bottom",
 });
 tippy(staty, {
-  content: "Statystyki (TBD)",
+  content: "Statystyki",
   placement: "bottom",
 });

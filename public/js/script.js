@@ -56,6 +56,7 @@ const padZero = (num) => String(num).padStart(2, "0");
 const launchCards = [];
 let countdownTimerId = null;
 let isFetching = false;
+let launchResults = [];
 
 const renameRocket = (name) => mapValue(RocketMap, name).replace(/Long March (\d+)/g, "Chang Zheng $1");
 
@@ -97,7 +98,8 @@ function fetchData() {
   const currentTime = new Date().getTime();
 
   if (cachedData && cachedTimestamp && currentTime - Number(cachedTimestamp) <= 15 * 60 * 1000) {
-    displayLaunchData(JSON.parse(cachedData).results);
+    launchResults = JSON.parse(cachedData).results;
+    displayLaunchData(launchResults);
     isFetching = false;
     return;
   }
@@ -108,11 +110,13 @@ function fetchData() {
     .then((data) => {
       localStorage.setItem("cachedData", JSON.stringify(data));
       localStorage.setItem("cachedTimestamp", String(currentTime));
-      displayLaunchData(data.results);
+      launchResults = data.results;
+      displayLaunchData(launchResults);
     })
     .catch(() => {
       if (cachedData) {
-        displayLaunchData(JSON.parse(cachedData).results);
+        launchResults = JSON.parse(cachedData).results;
+        displayLaunchData(launchResults);
       }
     })
     .finally(() => {

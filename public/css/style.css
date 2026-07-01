@@ -53,6 +53,11 @@ body {
   justify-content: center;
 }
 
+.selected {
+  color: #b967e1;
+  opacity: 1;
+}
+
 .krajeUpHolder {
   font-size: 2rem;
   display: flex;
@@ -162,7 +167,7 @@ body {
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 1;
+  line-clamp: 1;
   overflow: hidden;
   align-self: flex-end;
   font-size: 2rem;

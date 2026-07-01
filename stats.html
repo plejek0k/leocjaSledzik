@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <!-- Standard -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="./public/img/icon.png" type="image/x-icon">
+    <title>Statystyki - Śledzik</title>
+    <meta name="description" content="Śledzik to bardzo PROSTY w obsłudze harmonogram najbliższych wydarzeń KOSMICZNYCH!">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="./public/css/style.css">
+    <!-- Facebook Meta -->
+    <meta property="og:url" content="https://sledzik.leocja.org/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Śledzik - Twoje RAKIETOWE miejsce w MIKRONACJACH!">
+    <meta property="og:description" content="Śledzik to bardzo PROSTY w obsłudze harmonogram najbliższych wydarzeń KOSMICZNYCH!">
+    <meta property="og:image" content="https://kustosz.stempel.org.pl/1095/101005704499824289_t.png">
+    <!-- Twitter Meta -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="twitter:domain" content="sledzik.leocja.org">
+    <meta property="twitter:url" content="https://sledzik.leocja.org/">
+    <meta name="twitter:title" content="Śledzik - Twoje RAKIETOWE miejsce w MIKRONACJACH!">
+    <meta name="twitter:description" content="Śledzik to bardzo PROSTY w obsłudze harmonogram najbliższych wydarzeń KOSMICZNYCH!">
+    <meta name="twitter:image" content="https://kustosz.stempel.org.pl/1095/101005704499824289_t.png">
+    <!-- JS libs -->
+    <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
+    <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.min.js"></script>
+    <script src="https://unpkg.com/tippy.js@6/dist/tippy-bundle.umd.js"></script>
+    <script src="https://unpkg.com/nprogress@0.2.0/nprogress.js"></script>
+    <link rel="stylesheet" href="./public/css/nprogress.css">
+    
+    <style>
+        #backBtn {
+            color: #ffffff;
+            opacity: 0.85;
+            font-size: 1.25rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            display: inline-block;
+            margin-bottom: 1rem;
+            transition: 0.2s;
+        }
+        #backBtn:hover {
+            color: #b967e1;
+            opacity: 1;
+        }
+        .krajeUpHolder {
+            font-size: 2rem;
+            display: flex;
+            flex-direction: row;
+            position: absolute;
+            right: 80px;
+            top: 56.75px;
+            gap: 0.5rem;
+            opacity: 1;
+        }
+        .krajeUpHolder i:hover {
+            color: #b967e1;
+            opacity: 1;
+        }
+        .selected {
+            color: #b967e1;
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <main id="mainApp">
+        <aside id="logo">
+            <div class="logoContent">
+                <a href="./index.html"><img src="./public/img/logo.webp" loading="lazy"></a>
+                <div class="text">
+                    statystyki na podstawie danych <a href="https://planet4589.org/space/stats/launches.html">J. McDowella</a><br>
+                    <span class="copyleft">©</span> <span id="year"></span>
+                    <script>document.getElementById("year").innerHTML = new Date().getFullYear();</script>
+                    <a href="https://stempel.org.pl/paszport/1095">Plejek</a> all wrongs reserved<br>
+                </div>
+                <div class="krajeUpHolder">
+                    <a href="https://github.com/plejek0k/leocjaSledzik"><i class="lab la-github" id="github"></i></a>
+                    <a href="#"><i class="las la-clipboard-list" id="baza"></i></a>
+                    <a href="./stats.html"><i class="las la-chart-bar selected" id="staty"></i></a>
+                </div>
+            </div>
+        </aside>
+
+        <div id="app">
+        </div>
+    </main>
+<script defer src="./public/js/mainTooltips.js"></script>
+<script>
+        const appDiv = document.getElementById("app");
+        const currentYear = new Date().getFullYear();
+
+        const countryMap = {
+            "US": "USA",
+            "CN": "Chiny",
+            "IN": "Indie",
+        };
+        const mapCountry = (code) => countryMap[code.toUpperCase()] || code;
+
+        function parseStats(text) {
+            const clean = (text || "").replace(/\s+/g, " ");
+            const stats = {};
+
+            const extract = (regex, index = 1) => {
+                const match = clean.match(regex);
+                return match ? match[index].replace(/,/g, "") : "0";
+            };
+
+            stats.totalAttempts = extract(/Total orbital attempts, all time:\s*([\d,]+)/i);
+            stats.totalOrbit = extract(/Total launches to orbit, all time:\s*([\d,]+)/i);
+            
+            stats.attemptsYear = extract(new RegExp(`Total orbital attempts in\\s*${currentYear}:\\s*([\\d,]+)`, 'i'));
+            stats.orbitYear = extract(new RegExp(`Total launches to orbit in\\s*${currentYear}:\\s*([\\d,]+)`, 'i'));
+            
+            const bestYearMatch = clean.match(/Biggest annual total\s*([\d,]+)\s*in\s*(\d{4})/i);
+            stats.bestYear = bestYearMatch ? bestYearMatch[2] : "Brak";
+
+            const countryYearMatch = clean.match(new RegExp(`Most by one country in\\s*${currentYear}:\\s*(\\d+)\\s*by\\s*([A-Z]{2,})`, 'i'));
+            stats.countryYear = countryYearMatch ? `${countryYearMatch[1]} (${mapCountry(countryYearMatch[2])})` : "Brak";
+
+            return stats;
+        }
+
+        function renderCards(stats) {
+        const cardsConfig = [
+        { title: "Wszystkie starty", category: "Historyczne", value: `${stats.totalAttempts} lotów`, bgUrl: "./public/img/stats/1.webp" },
+        { title: `w ${currentYear} roku`, category: "Starty", value: `${stats.attemptsYear} lotów`, bgUrl: "./public/img/stats/2.webp" },
+
+        { title: "Udane orbity", category: "Historyczne", value: `${stats.totalOrbit} lotów`, bgUrl: "./public/img/stats/3.webp" },
+        { title: `w ${currentYear}`, category: "Udane orbity", value: `${stats.orbitYear} lotów`, bgUrl: "./public/img/stats/4.webp" },
+
+        { title: `Startów w ${currentYear}`, category: "Najwięcej", value: stats.countryYear, bgUrl: "./public/img/stats/5.webp" },
+        ];
+
+            const fragment = document.createDocumentFragment();
+
+            cardsConfig.forEach(card => {
+                const article = document.createElement("article");
+                article.className = "start";
+                article.style.backgroundImage = `linear-gradient(106deg, rgba(157, 80, 187, 0.60) -0.02%, rgba(110, 72, 170, 0.60) 99.98%), url(${card.bgUrl})`;
+
+                article.innerHTML = `
+                    <div class="czasDiv" id="czasDiv">
+                        <div id="countdown-stat">
+                            <p id="czasElement">${card.value}</p>
+                        </div>
+                    </div>
+                    <div class="info">
+                        <p class="nazwaRakiety">${card.category}</p>
+                        <p id="nazwaMisji">${card.title}</p>
+                    </div>
+                `;
+                fragment.appendChild(article);
+            });
+
+            appDiv.innerHTML = "";
+            appDiv.appendChild(fragment);
+        }
+
+        function fetchStats() {
+            if (typeof NProgress !== 'undefined') NProgress.start();
+            
+            fetch("https://r.jina.ai/https://planet4589.org/space/stats/launches.html")
+                .then((res) => res.text())
+                .then((text) => {
+                    const stats = parseStats(text);
+                    renderCards(stats);
+                })
+                .catch((err) => {
+                    console.error(err);
+                })
+                .finally(() => {
+                    if (typeof NProgress !== 'undefined') NProgress.done();
+                });
+        }
+
+        fetchStats();
+    </script>
+</body>
+</html>
