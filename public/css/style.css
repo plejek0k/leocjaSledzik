@@ -135,6 +135,12 @@ body {
   width: 13rem;
 }
 
+#starIcon:hover {
+  color: #b967e1;
+  transition: 0.2s;
+  cursor: pointer;
+}
+
 #streamIcon {
   align-self: flex-end;
   font-size: 2rem;

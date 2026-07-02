@@ -295,6 +295,10 @@ function displayLaunchData(results) {
       const mapIcon = createWikipediaIcon("las la-map-marked-alt", locationName, "location");
       mapIcon.id = "map";
 
+      const starIcon = document.createElement("a");
+      starIcon.className = "lar la-star";
+      starIcon.id = "starIcon";
+
       const rocketIcon = createWikipediaIcon("las la-rocket", upgradedRocketName, "rocket");
       rocketIcon.id = "rocketIcon";
 
@@ -310,7 +314,8 @@ function displayLaunchData(results) {
       czasDiv.className = "czasDiv";
       czasDiv.id = "czasDiv";
 
-      streamHolder.append(rocketIcon, mapIcon);
+      // Dodanie gwiazdki zaraz po ikonce rakiety
+      streamHolder.append(starIcon, rocketIcon, mapIcon);
       info.append(missionNameElement, rocketNameElement);
       czasDiv.appendChild(countdownElement);
 
