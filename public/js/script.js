@@ -23,6 +23,7 @@ const LaunchLocationMap = {
 
 const MissionReplacements = {
   "Unknown Payload": "Ładunek nieznany",
+  "Demo Flight": "Lot demonstracyjny",
   "Vostochny Angara Test Flight": "Angara Test Flight",
   "Space Mission": "",
   "CST-100 Starliner Crewed Flight Test": "Boeing Crewed Flight Test",
@@ -53,6 +54,7 @@ const OrbitMap = {
 
 const months = ["stycznia", "lutego", "marca", "kwietnia", "maja", "czerwca", "lipca", "sierpnia", "września", "października", "listopada", "grudnia"];
 const padZero = (num) => String(num).padStart(2, "0");
+const flightInProgressThresholdMs = 45 * 60 * 1000;
 const launchCards = [];
 let countdownTimerId = null;
 let isFetching = false;
@@ -73,7 +75,10 @@ const poprawaMisji = (missionName) => {
     .replace(/nk\b Group/g, "nk Grupa")
     .replace(/Integrated Flight Test (\d+)/g, "Starship Flight Test $1")
     .replace(/Flight (\d+)/g, "Flight $1")
-    .replace(/FLTA\d+\s*/, "");
+    .replace(/FLTA\d+\s*/, "")
+    .replace(/\bSpaceSail\s+Polar\s+Group\s+TBD\b/gi, "Qianfan")
+    .replace(/\bGroup\s+TBD\b/gi, "Qianfan")
+    .replace(/\bGroup\s+(.+?)$/gi, "Grupa $1");
 
   const match = updated.match(/Dragon CRS-2 SpX-(\d+)/);
   return match ? `CRS-${match[1]}` : updated;
@@ -132,7 +137,10 @@ function createLaunchBackground(status, image) {
     "CZĘŚCIOWA PORAŻKA": "rgba(183, 65, 65, 0.6)",
     "START WSTRZYMANY": "rgba(176, 177, 84, 0.6)",
     "Lot w trakcie": "rgba(88, 69, 96, 0.6)",
-    "Do potwierdzenia": "rgba(88, 69, 96, 0.6)"
+    "DO POTWIERDZENIA": "rgba(88, 69, 96, 0.6)",
+    "Do potwierdzenia": "rgba(88, 69, 96, 0.6)",
+    "DATA POTWIERDZONA": "rgba(88, 69, 96, 0.6)",
+    "DO USTALENIA": "rgba(157, 80, 187, 0.60)"
   };
 
   const backgroundColor = gradientMap[status] || "rgba(157, 80, 187, 0.60)";
@@ -148,6 +156,8 @@ function createWikipediaLink(name, type) {
       "Electron": "https://en.wikipedia.org/wiki/Rocket_Lab_Electron",
       "H3-22": "https://en.wikipedia.org/wiki/H3_(rocket)",
       "Spectrum": "https://en.wikipedia.org/wiki/Isar_Aerospace_Spectrum",
+      "Chang Zheng 8A": "https://en.wikipedia.org/wiki/Long_March_8#CZ-8A_variant",
+      "Chang Zheng 6A": "https://en.wikipedia.org/wiki/Long_March_6A",
     },
     location: {
       "Start w powietrzu": "https://en.wikipedia.org/wiki/Air_launch"
@@ -168,8 +178,23 @@ function createTextElement(text, className) {
 function updateCountdown(cardState) {
   const now = new Date().getTime();
   const launchTime = new Date(cardState.result.net).getTime();
-  const timeRemaining = launchTime - now;
+  const hasValidLaunchTime = Number.isFinite(launchTime);
+  const apiStatus = cardState.result?.status?.name;
+  const translatedStatus = getStatusAbbreviation(apiStatus);
+  const isTerminalStatus = ["Pomyślny start", "Nieudany start", "CZĘŚCIOWA PORAŻKA", "START WSTRZYMANY"].includes(translatedStatus);
 
+  const timeSinceLaunch = hasValidLaunchTime ? now - launchTime : 0;
+  const isLaunchTimePassed = hasValidLaunchTime && timeSinceLaunch >= 0;
+  const isApiInFlight = apiStatus === "Launch in Flight";
+  const shouldShowInFlight = hasValidLaunchTime && (isApiInFlight || (!isTerminalStatus && isLaunchTimePassed && timeSinceLaunch <= flightInProgressThresholdMs));
+
+  let displayStatus = translatedStatus || cardState.status;
+
+  if (shouldShowInFlight) {
+    displayStatus = "Lot w trakcie";
+  }
+
+  const timeRemaining = isLaunchTimePassed ? 0 : Math.max(0, launchTime - now);
   const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
   const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
   const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
@@ -177,13 +202,19 @@ function updateCountdown(cardState) {
   const formatTime = [days, hours, minutes, seconds].map(padZero);
 
   let countdownText = formatTime.join(":");
-  if (days > 2 && cardState.status === "DATA POTWIERDZONA") {
+  if (days > 2 && displayStatus === "DATA POTWIERDZONA") {
     countdownText = `Start za ${days} dni`;
   }
 
-  if (cardState.status !== "DATA POTWIERDZONA") {
-    countdownText = cardState.status;
+  if (isApiInFlight || displayStatus === "Lot w trakcie") {
+    countdownText = "Lot w trakcie";
+  } else if (displayStatus !== "DATA POTWIERDZONA") {
+    countdownText = displayStatus;
   }
+
+  cardState.status = displayStatus;
+
+  cardState.element.style.backgroundImage = createLaunchBackground(displayStatus, cardState.result.image);
 
   let timeElement = cardState.countdownElement.querySelector("#czasElement");
   if (!timeElement) {
@@ -196,7 +227,7 @@ function updateCountdown(cardState) {
     timeElement.textContent = countdownText;
   }
 
-  if (days < 10 && cardState.status === "DATA POTWIERDZONA") {
+  if (days < 10 && displayStatus === "DATA POTWIERDZONA") {
     const tooltipLabel = `${cardState.launchDate.getDate()} ${months[cardState.launchDate.getMonth()]} ${cardState.launchDate.getFullYear()}, ${padZero(cardState.launchDate.getHours())}:${padZero(cardState.launchDate.getMinutes())}`;
     const tooltipContent = `<center>${tooltipLabel}</center>`;
 
