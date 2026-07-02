@@ -299,6 +299,12 @@ function displayLaunchData(results) {
       starIcon.className = "lar la-star";
       starIcon.id = "starIcon";
 
+      tippy(starIcon, {
+        content: `TBD`,
+        placement: "top",
+        allowHTML: true
+      });
+
       const rocketIcon = createWikipediaIcon("las la-rocket", upgradedRocketName, "rocket");
       rocketIcon.id = "rocketIcon";
 
