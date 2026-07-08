@@ -19,6 +19,7 @@ const LaunchLocationMap = {
   "Wallops Island": "Mid-Atlantic Regional Spaceport",
   "Cape Canaveral": "Cape Canaveral Space Force Station",
   "Pacific Spaceport Complex": "Pacific Spaceport Complex – Alaska",
+  "International Space Station": "Międzynarodowa Stacja Kosmiczna",
 };
 
 const MissionReplacements = {
@@ -29,10 +30,22 @@ const MissionReplacements = {
   "CST-100 Starliner Crewed Flight Test": "Boeing Crewed Flight Test",
 };
 
+const EventIconMap = {
+  "Dokowanie": "las la-satellite",
+  "Oddokowanie": "las la-satellite",
+};
+
 const RocketMap = {
   "Smart Dragon 1": "Jielong 1",
   "Smart Dragon 2": "Jielong 2",
-  "Smart Dragon 3": "Jielong 3"
+  "Smart Dragon 3": "Jielong 3",
+  "Docking": "Dokowanie",
+  "Spacewalk": "Spacer Kosmiczny",
+  "Undocking": "Oddokowanie",
+  "Berthing": "Cumowanie",
+  "Spacecraft Release": "Uwolnienie statku",
+  "Press Conference": "Konferencja prasowa",
+  "Static Fire": "Test statyczny",
 };
 
 const AgencyShortNames = {
@@ -60,7 +73,10 @@ let countdownTimerId = null;
 let isFetching = false;
 let launchResults = [];
 
-const renameRocket = (name) => mapValue(RocketMap, name).replace(/Long March (\d+)/g, "Chang Zheng $1");
+const renameRocket = (name) => {
+  let renamed = mapValue(RocketMap, name).replace(/Long March (\d+)/g, "Chang Zheng $1");
+  return renamed.replace(/\bSoyuz\b/gi, "Sojuz");
+};
 
 const poprawaMisji = (missionName) => {
   let updated = missionName.replace(/\(([^)]+)\)/g, "");
@@ -78,10 +94,13 @@ const poprawaMisji = (missionName) => {
     .replace(/FLTA\d+\s*/, "")
     .replace(/\bSpaceSail\s+Polar\s+Group\s+TBD\b/gi, "Qianfan")
     .replace(/\bGroup\s+TBD\b/gi, "Qianfan")
-    .replace(/\bGroup\s+(.+?)$/gi, "Grupa $1");
+    .replace(/\bGroup\s+(.+?)$/gi, "Grupa $1")
+    .replace(/\bDocking\b/gi, "")
+    .replace(/\bSoyuz\b/gi, "Sojuz");
 
   const match = updated.match(/Dragon CRS-2 SpX-(\d+)/);
-  return match ? `CRS-${match[1]}` : updated;
+  let finalName = match ? `CRS-${match[1]}` : updated;
+  return finalName.replace(/\s+/g, " ").trim();
 };
 
 const removeTextAfterSlash = (text) => text.split("/")[0];
@@ -103,24 +122,55 @@ function fetchData() {
   const currentTime = new Date().getTime();
 
   if (cachedData && cachedTimestamp && currentTime - Number(cachedTimestamp) <= 15 * 60 * 1000) {
-    launchResults = JSON.parse(cachedData).results;
+    const parsed = JSON.parse(cachedData);
+    launchResults = parsed.results || parsed;
     displayLaunchData(launchResults);
     isFetching = false;
     return;
   }
 
   NProgress.start();
-  fetch("https://ll.thespacedevs.com/2.2.0/launch/upcoming/?mode=detailed&limit=16")
-    .then((res) => res.json())
-    .then((data) => {
-      localStorage.setItem("cachedData", JSON.stringify(data));
+  Promise.all([
+    fetch("https://ll.thespacedevs.com/2.2.0/launch/upcoming/?mode=detailed&limit=16").then((res) => res.json()),
+    fetch("https://ll.thespacedevs.com/2.2.0/event/upcoming/?mode=detailed&limit=16").then((res) => res.json())
+  ])
+    .then(([launchData, eventData]) => {
+      const launches = launchData.results || [];
+      const events = eventData.results || [];
+
+      let maxLaunchDate = null;
+      if (launches.length > 0) {
+        maxLaunchDate = new Date(Math.max(...launches.map(l => new Date(l.net).getTime())));
+      }
+
+      const normalizedEvents = events
+        .filter(e => {
+          if (!maxLaunchDate) return true;
+          return new Date(e.date).getTime() <= maxLaunchDate.getTime();
+        })
+        .map(e => ({
+          id: `event-${e.id}`,
+          isEvent: true,
+          net: e.date,
+          image: e.feature_image,
+          mission: { name: e.name },
+          rocket: { configuration: { name: e.type ? e.type.name : "Wydarzenie" } },
+          pad: { location: { name: e.location ? e.location : "Nieznana lokalizacja" } },
+          status: { name: "Go for Launch" }
+        }));
+
+      const combinedResults = [...launches, ...normalizedEvents];
+
+      localStorage.setItem("cachedData", JSON.stringify({ results: combinedResults }));
       localStorage.setItem("cachedTimestamp", String(currentTime));
-      launchResults = data.results;
+      launchResults = combinedResults;
       displayLaunchData(launchResults);
     })
-    .catch(() => {
+    .catch((err) => {
+      console.error(err);
       if (cachedData) {
-        launchResults = JSON.parse(cachedData).results;
+        const parsed = JSON.parse(cachedData);
+        launchResults = parsed.results || parsed;
         displayLaunchData(launchResults);
       }
     })
@@ -157,10 +207,12 @@ function createWikipediaLink(name, type) {
       "H3-22": "https://en.wikipedia.org/wiki/H3_(rocket)",
       "Spectrum": "https://en.wikipedia.org/wiki/Isar_Aerospace_Spectrum",
       "Chang Zheng 8A": "https://en.wikipedia.org/wiki/Long_March_8#CZ-8A_variant",
-      "Chang Zheng 6A": "https://en.wikipedia.org/wiki/Long_March_6A",
+      "Chang Zheng 6A": "https://en.wikipedia.org/wiki/Long_March_6A"
     },
     location: {
-      "Start w powietrzu": "https://en.wikipedia.org/wiki/Air_launch"
+      "Start w powietrzu": "https://en.wikipedia.org/wiki/Air_launch",
+      "International Space Station": "https://en.wikipedia.org/wiki/International_Space_Station",
+      "Międzynarodowa Stacja Kosmiczna": "https://en.wikipedia.org/wiki/International_Space_Station"
     }
   };
 
@@ -203,7 +255,7 @@ function updateCountdown(cardState) {
 
   let countdownText = formatTime.join(":");
   if (days > 2 && displayStatus === "DATA POTWIERDZONA") {
-    countdownText = `Start za ${days} dni`;
+    countdownText = cardState.result.isEvent ? `Event za ${days} dni` : `Start za ${days} dni`;
   }
 
   if (isApiInFlight || displayStatus === "Lot w trakcie") {
@@ -253,6 +305,29 @@ function updateAllCountdowns() {
   launchCards.forEach(updateCountdown);
 }
 
+function adjustGridRows() {
+  const appDiv = document.getElementById("app");
+  if (!appDiv) return;
+  const articles = Array.from(appDiv.querySelectorAll("article.start"));
+  if (articles.length === 0) return;
+
+  articles.forEach(a => a.style.display = "");
+
+  const columnsStr = window.getComputedStyle(appDiv).gridTemplateColumns;
+  const gridColumns = columnsStr.split(" ").filter(c => parseFloat(c) > 0).length;
+
+  if (gridColumns > 0) {
+    const remainder = articles.length % gridColumns;
+    if (remainder !== 0 && articles.length > gridColumns) {
+      for (let i = articles.length - remainder; i < articles.length; i++) {
+        articles[i].style.display = "none";
+      }
+    }
+  }
+}
+
+window.addEventListener("resize", adjustGridRows);
+
 function displayLaunchData(results) {
   const appDiv = document.getElementById("app");
   const fragment = document.createDocumentFragment();
@@ -292,7 +367,12 @@ function displayLaunchData(results) {
         return icon;
       };
 
-      const mapIcon = createWikipediaIcon("las la-map-marked-alt", locationName, "location");
+      let locationIconClass = "las la-map-marked-alt";
+      if (result.isEvent) {
+        locationIconClass = EventIconMap[upgradedRocketName] || "las la-map-marked-alt";
+      }
+
+      const mapIcon = createWikipediaIcon(locationIconClass, locationName, "location");
       mapIcon.id = "map";
 
       const starIcon = document.createElement("a");
@@ -304,9 +384,6 @@ function displayLaunchData(results) {
         placement: "top",
         allowHTML: true
       });
-
-      const rocketIcon = createWikipediaIcon("las la-rocket", upgradedRocketName, "rocket");
-      rocketIcon.id = "rocketIcon";
 
       const streamHolder = document.createElement("a");
       streamHolder.id = "streamIcon";
@@ -320,8 +397,14 @@ function displayLaunchData(results) {
       czasDiv.className = "czasDiv";
       czasDiv.id = "czasDiv";
 
-      // Dodanie gwiazdki zaraz po ikonce rakiety
-      streamHolder.append(starIcon, rocketIcon, mapIcon);
+      // Dodanie ikon do holdera
+      streamHolder.append(starIcon);
+      if (!result.isEvent) {
+        const rocketIcon = createWikipediaIcon("las la-rocket", upgradedRocketName, "rocket");
+        rocketIcon.id = "rocketIcon";
+        streamHolder.append(rocketIcon);
+      }
+      streamHolder.append(mapIcon);
       info.append(missionNameElement, rocketNameElement);
       czasDiv.appendChild(countdownElement);
 
@@ -346,6 +429,8 @@ function displayLaunchData(results) {
   if (!countdownTimerId) {
     countdownTimerId = window.setInterval(updateAllCountdowns, 1000);
   }
+
+  adjustGridRows();
 }
 
 fetchData();
