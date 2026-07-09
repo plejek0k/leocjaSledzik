@@ -40,29 +40,11 @@ const RocketMap = {
   "Smart Dragon 2": "Jielong 2",
   "Smart Dragon 3": "Jielong 3",
   "Docking": "Dokowanie",
-  "Spacewalk": "Spacer Kosmiczny",
+  "Spacewalk": "Spacer kosmiczny",
   "Undocking": "Oddokowanie",
-  "Berthing": "Cumowanie",
-  "Spacecraft Release": "Uwolnienie statku",
+  "Berthing": "Dokowanie",
   "Press Conference": "Konferencja prasowa",
-  "Static Fire": "Test statyczny",
-};
-
-const AgencyShortNames = {
-  "China Aerospace Science and Technology Corporation": "CASC",
-  "Indian Space Research Organization": "ISRO",
-  "Russian Federal Space Agency (ROSCOSMOS)": "ROSCOSMOS",
-  "Russian Space Forces": "Rosyjskie Siły Kosmiczne",
-  "United Launch Alliance": "ULA",
-  "Mitsubishi Heavy Industries": "MHI",
-};
-
-const OrbitMap = {
-  "N/A": "BRAK INFORMACJI",
-  "Sub": "LOT SUBORBITALNY",
-  "Elliptical": "ELIPTYCZNA",
-  "PO": "POLARNA",
-  "LO": "KSIĘŻYCOWA",
+  "Static Fire": "Test static fire",
 };
 
 const months = ["stycznia", "lutego", "marca", "kwietnia", "maja", "czerwca", "lipca", "sierpnia", "września", "października", "listopada", "grudnia"];
@@ -96,7 +78,9 @@ const poprawaMisji = (missionName) => {
     .replace(/\bGroup\s+TBD\b/gi, "Qianfan")
     .replace(/\bGroup\s+(.+?)$/gi, "Grupa $1")
     .replace(/\bDocking\b/gi, "")
-    .replace(/\bSoyuz\b/gi, "Sojuz");
+    .replace(/\bSoyuz\b/gi, "Sojuz")
+    .replace(/SDA Tranche (\d+) Transport Layer ([A-Za-z0-9]+)/g, "SDA Transza $1-$2")
+    .replace(/StriX Launch (\d+)/g, "StriX-$1");
 
   const match = updated.match(/Dragon CRS-2 SpX-(\d+)/);
   let finalName = match ? `CRS-${match[1]}` : updated;
@@ -108,8 +92,6 @@ const removeTextAfterSlash = (text) => text.split("/")[0];
 const getStatusAbbreviation = (status) => mapValue(StatusMap, status);
 const translateLaunch = (location) => mapValue(LaunchLocationMap, location);
 const getRocketReplacement = (rocket) => renameRocket(rocket);
-const skrotAgencji = (agency) => mapValue(AgencyShortNames, agency);
-const brakOrbity = (orbit) => mapValue(OrbitMap, orbit);
 
 function fetchData() {
   if (isFetching) {
@@ -206,8 +188,6 @@ function createWikipediaLink(name, type) {
       "Electron": "https://en.wikipedia.org/wiki/Rocket_Lab_Electron",
       "H3-22": "https://en.wikipedia.org/wiki/H3_(rocket)",
       "Spectrum": "https://en.wikipedia.org/wiki/Isar_Aerospace_Spectrum",
-      "Chang Zheng 8A": "https://en.wikipedia.org/wiki/Long_March_8#CZ-8A_variant",
-      "Chang Zheng 6A": "https://en.wikipedia.org/wiki/Long_March_6A"
     },
     location: {
       "Start w powietrzu": "https://en.wikipedia.org/wiki/Air_launch",
@@ -217,7 +197,20 @@ function createWikipediaLink(name, type) {
   };
 
   const specialLink = specialLinks[type]?.[name];
-  return specialLink || `https://en.wikipedia.org/wiki/${name}`;
+  if (specialLink) return specialLink;
+
+  if (type === "rocket") {
+    const changZhengMatch = name.match(/^Chang Zheng\s+(\d+[A-Za-z]*)$/);
+    if (changZhengMatch) {
+      return `https://en.wikipedia.org/wiki/Long_March_${changZhengMatch[1]}`;
+    }
+
+    if (/^Sojuz\b/i.test(name)) {
+      return `https://en.wikipedia.org/wiki/${name.replace(/^Sojuz/i, "Soyuz")}`;
+    }
+  }
+
+  return `https://en.wikipedia.org/wiki/${name}`;
 }
 
 function createTextElement(text, className) {
@@ -397,7 +390,6 @@ function displayLaunchData(results) {
       czasDiv.className = "czasDiv";
       czasDiv.id = "czasDiv";
 
-      // Dodanie ikon do holdera
       streamHolder.append(starIcon);
       if (!result.isEvent) {
         const rocketIcon = createWikipediaIcon("las la-rocket", upgradedRocketName, "rocket");
