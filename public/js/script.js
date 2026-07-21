@@ -32,7 +32,7 @@ const MissionReplacements = {
 
 const EventIconMap = {
   "Dokowanie": "las la-satellite",
-  "Oddokowanie": "las la-satellite",
+  "Odłączenie statku": "las la-satellite",
 };
 
 const RocketMap = {
@@ -40,11 +40,12 @@ const RocketMap = {
   "Smart Dragon 2": "Jielong 2",
   "Smart Dragon 3": "Jielong 3",
   "Docking": "Dokowanie",
+  "Spacecraft Undocking": "Odłączenie statku",
   "Spacewalk": "Spacer kosmiczny",
-  "Undocking": "Oddokowanie",
   "Berthing": "Dokowanie",
   "Press Conference": "Konferencja prasowa",
   "Static Fire": "Test static fire",
+  "Mir": "GYŪB",
 };
 
 const months = ["stycznia", "lutego", "marca", "kwietnia", "maja", "czerwca", "lipca", "sierpnia", "września", "października", "listopada", "grudnia"];
@@ -78,9 +79,11 @@ const poprawaMisji = (missionName) => {
     .replace(/\bGroup\s+TBD\b/gi, "Qianfan")
     .replace(/\bGroup\s+(.+?)$/gi, "Grupa $1")
     .replace(/\bDocking\b/gi, "")
+    .replace(/\bUndocking\b/gi, "")
     .replace(/\bSoyuz\b/gi, "Sojuz")
     .replace(/SDA Tranche (\d+) Transport Layer ([A-Za-z0-9]+)/g, "SDA Transza $1-$2")
-    .replace(/StriX Launch (\d+)/g, "StriX-$1");
+    .replace(/StriX Launch (\d+)/g, "StriX-$1")
+    .replace(/\d+\s*x\s*Rassvet-3/gi, "satelity Rassvet-3");
 
   const match = updated.match(/Dragon CRS-2 SpX-(\d+)/);
   let finalName = match ? `CRS-${match[1]}` : updated;
@@ -188,6 +191,7 @@ function createWikipediaLink(name, type) {
       "Electron": "https://en.wikipedia.org/wiki/Rocket_Lab_Electron",
       "H3-22": "https://en.wikipedia.org/wiki/H3_(rocket)",
       "Spectrum": "https://en.wikipedia.org/wiki/Isar_Aerospace_Spectrum",
+      "GYŪB": "https://en.wikipedia.org/wiki/Solid-fuel_space_launch_vehicle",
     },
     location: {
       "Start w powietrzu": "https://en.wikipedia.org/wiki/Air_launch",
