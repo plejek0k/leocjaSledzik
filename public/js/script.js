@@ -33,6 +33,8 @@ const MissionReplacements = {
 const EventIconMap = {
   "Dokowanie": "las la-satellite",
   "Odłączenie statku": "las la-satellite",
+  "Zmiana dowództwa": "las la-satellite",
+  "Ceremonia pożegnalna": "las la-satellite",
 };
 
 const RocketMap = {
@@ -43,9 +45,16 @@ const RocketMap = {
   "Spacecraft Undocking": "Odłączenie statku",
   "Spacewalk": "Spacer kosmiczny",
   "Berthing": "Dokowanie",
-  "Press Conference": "Konferencja prasowa",
+  "Press Event": "Konferencja prasowa",
+  "Farewell Ceremony": "Ceremonia pożegnalna",
+  "Change of Command": "Zmiana dowództwa",
+  "Spacecraft Landing": "Powrót na Ziemię",
   "Static Fire": "Test static fire",
   "Mir": "GYŪB",
+};
+
+const CustomStreamMap = {
+  "Flight 13": "https://www.youtube.com/watch?v=4WzjGAX42Jc",
 };
 
 const months = ["stycznia", "lutego", "marca", "kwietnia", "maja", "czerwca", "lipca", "sierpnia", "września", "października", "listopada", "grudnia"];
@@ -83,7 +92,13 @@ const poprawaMisji = (missionName) => {
     .replace(/\bSoyuz\b/gi, "Sojuz")
     .replace(/SDA Tranche (\d+) Transport Layer ([A-Za-z0-9]+)/g, "SDA Transza $1-$2")
     .replace(/StriX Launch (\d+)/g, "StriX-$1")
-    .replace(/\d+\s*x\s*Rassvet-3/gi, "satelity Rassvet-3");
+    .replace(/\d+\s*x\s*Rassvet-3/gi, "satelity Rassvet-3")
+    .replace(/(?:ISS\s+)?Expedition\s+(\d+(?:-\d+)?)(?:\s+Change of Command Ceremony)?/gi, "Ekspedycja $1")
+    .replace(/\s+Farewell\s+Ceremony/gi, "")
+    .replace(/\s+Landing/gi, "")
+    .replace(/\s+Pre-Launch/gi, "")
+    .replace(/\s+(?:Mission\s+Overview|Crew)?\s*(?:News\s+Conference|Press\s+Conference|Media\s+Briefing)/gi, "")
+    .replace(/\s+(?:Pre|Post)-Launch\s+(?:Media\s+Briefing|Press\s+Conference|Briefing)/gi, "");
 
   const match = updated.match(/Dragon CRS-2 SpX-(\d+)/);
   let finalName = match ? `CRS-${match[1]}` : updated;
@@ -141,7 +156,8 @@ function fetchData() {
           mission: { name: e.name },
           rocket: { configuration: { name: e.type ? e.type.name : "Wydarzenie" } },
           pad: { location: { name: e.location ? e.location : "Nieznana lokalizacja" } },
-          status: { name: "Go for Launch" }
+          status: { name: "Go for Launch" },
+          vidURLs: e.vidURLs || (e.video_url ? [{ url: e.video_url }] : [])
         }));
 
       const combinedResults = [...launches, ...normalizedEvents];
@@ -167,15 +183,14 @@ function fetchData() {
 
 function createLaunchBackground(status, image) {
   const gradientMap = {
-    "Pomyślny start": "rgba(110, 198, 118, 0.6)",
-    "Nieudany start": "rgba(183, 65, 65, 0.6)",
-    "CZĘŚCIOWA PORAŻKA": "rgba(183, 65, 65, 0.6)",
-    "START WSTRZYMANY": "rgba(176, 177, 84, 0.6)",
-    "Lot w trakcie": "rgba(88, 69, 96, 0.6)",
-    "DO POTWIERDZENIA": "rgba(88, 69, 96, 0.6)",
-    "Do potwierdzenia": "rgba(88, 69, 96, 0.6)",
-    "DATA POTWIERDZONA": "rgba(88, 69, 96, 0.6)",
-    "DO USTALENIA": "rgba(157, 80, 187, 0.60)"
+    "Pomyślny start": "rgba(46, 204, 113, 0.45)",
+    "Nieudany start": "rgba(235, 77, 75, 0.45)",
+    "CZĘŚCIOWA PORAŻKA": "rgba(243, 156, 18, 0.45)",
+    "START WSTRZYMANY": "rgba(241, 196, 15, 0.45)",
+    "Lot w trakcie": "rgba(52, 152, 219, 0.45)",
+    "DATA POTWIERDZONA": "rgba(185, 103, 225, 0.45)",
+    "DO POTWIERDZENIA": "rgba(155, 89, 182, 0.45)",
+    "DO USTALENIA": "rgba(142, 68, 173, 0.45)"
   };
 
   const backgroundColor = gradientMap[status] || "rgba(157, 80, 187, 0.60)";
@@ -346,6 +361,22 @@ function displayLaunchData(results) {
 
       launchElement.style.backgroundImage = createLaunchBackground(status, result.image);
 
+      const apiStreamUrl = result.vidURLs && result.vidURLs.length > 0 ? result.vidURLs[0].url : null;
+      const streamUrl = CustomStreamMap[missionName] || CustomStreamMap[result.mission.name] || apiStreamUrl;
+
+      if (streamUrl) {
+        launchElement.classList.add("has-stream");
+
+        const streamLink = document.createElement("a");
+        streamLink.href = streamUrl;
+        streamLink.target = "_blank";
+        streamLink.rel = "noopener noreferrer";
+        streamLink.className = "card-main-link";
+        streamLink.title = "Oglądaj transmisję na żywo";
+        
+        launchElement.append(streamLink);
+      }
+
       const rocketNameElement = createTextElement(upgradedRocketName, "nazwaRakiety");
       const missionNameElement = createTextElement(missionName, "nazwaMisji");
       missionNameElement.id = "nazwaMisji";
@@ -382,8 +413,9 @@ function displayLaunchData(results) {
         allowHTML: true
       });
 
-      const streamHolder = document.createElement("a");
+      const streamHolder = document.createElement("div");
       streamHolder.id = "streamIcon";
+
       const countdownElement = document.createElement("div");
       countdownElement.id = `countdown-${result.id}`;
 
@@ -400,7 +432,9 @@ function displayLaunchData(results) {
         rocketIcon.id = "rocketIcon";
         streamHolder.append(rocketIcon);
       }
-      streamHolder.append(mapIcon);
+      if (locationName.toLowerCase() !== "online") {
+        streamHolder.append(mapIcon);
+      }
       info.append(missionNameElement, rocketNameElement);
       czasDiv.appendChild(countdownElement);
 
