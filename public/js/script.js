@@ -30,6 +30,29 @@ const MissionReplacements = {
   "CST-100 Starliner Crewed Flight Test": "Boeing Crewed Flight Test",
 };
 
+const CelestialReplacements = {
+  types: {
+    "Total": "Całkowite",
+    "Partial": "Częściowe",
+    "Annular": "Obrączkowe",
+    "Penumbral": "Półcieniowe"
+  },
+  events: {
+    "Solar Eclipse": "zaćmienie Słońca",
+    "Lunar Eclipse": "zaćmienie Księżyca",
+    "Meteor Shower": "rój meteorów"
+  },
+  locations: {
+    "Europe": "Europie",
+    "North America": "Ameryce Północnej",
+    "South America": "Ameryce Południowej",
+    "Asia": "Azji",
+    "Africa": "Afryce",
+    "Australia": "Australii",
+    "Antarctica": "Antarktydzie",
+  }
+};
+
 const EventIconMap = {
   "Dokowanie": "las la-satellite",
   "Odłączenie statku": "las la-satellite",
@@ -49,9 +72,14 @@ const RocketMap = {
   "Farewell Ceremony": "Ceremonia pożegnalna",
   "Change of Command": "Zmiana dowództwa",
   "Spacecraft Landing": "Powrót na Ziemię",
+  "Celestial Event": "Zjawisko astronomiczne",
   "Static Fire": "Test static fire",
   "Mir": "GYŪB",
 };
+
+const RocketLocationOverrideMap = {
+  "GYŪB": "Anheung Proving Ground",
+}
 
 const CustomStreamMap = {
   "Flight 13": "https://www.youtube.com/watch?v=4WzjGAX42Jc",
@@ -72,6 +100,36 @@ const renameRocket = (name) => {
 
 const poprawaMisji = (missionName) => {
   let updated = missionName.replace(/\(([^)]+)\)/g, "");
+
+  updated = updated.replace(
+    /\b(Total|Partial|Annular|Penumbral)?\s*(Solar Eclipse|Lunar Eclipse|Meteor Shower)(?:\s+in\s+([a-zA-Z\s]+))?/i,
+    (match, type, eventName, loc) => {
+      let result = [];
+      
+      if (type && CelestialReplacements.types[type]) {
+        result.push(CelestialReplacements.types[type]);
+      }
+      
+      if (eventName && CelestialReplacements.events[eventName]) {
+        let translatedEvent = CelestialReplacements.events[eventName];
+        if (!type) {
+          translatedEvent = translatedEvent.charAt(0).toUpperCase() + translatedEvent.slice(1);
+        }
+        result.push(translatedEvent);
+      }
+      
+      if (loc) {
+        let cleanLoc = loc.trim();
+        if (CelestialReplacements.locations[cleanLoc]) {
+          result.push(`w ${CelestialReplacements.locations[cleanLoc]}`);
+        } else {
+          result.push(`w ${cleanLoc}`);
+        }
+      }
+      
+      return result.join(" ");
+    }
+  );
 
   updated = Object.entries(MissionReplacements).reduce(
     (acc, [key, value]) => acc.replace(new RegExp(key, "g"), value),
@@ -357,7 +415,13 @@ function displayLaunchData(results) {
       const upgradedRocketName = getRocketReplacement(rocketName);
       const missionName = poprawaMisji(result.mission.name);
       const status = getStatusAbbreviation(result.status.name);
-      const locationName = translateLaunch(result.pad.location.name.split(",")[0]);
+      let locationName = translateLaunch(result.pad.location.name.split(",")[0]);
+
+      if (RocketLocationOverrideMap[upgradedRocketName]) {
+        locationName = RocketLocationOverrideMap[upgradedRocketName];
+      } else if (RocketLocationOverrideMap[rocketName]) {
+        locationName = RocketLocationOverrideMap[rocketName];
+      }      
 
       launchElement.style.backgroundImage = createLaunchBackground(status, result.image);
 
@@ -432,7 +496,7 @@ function displayLaunchData(results) {
         rocketIcon.id = "rocketIcon";
         streamHolder.append(rocketIcon);
       }
-      if (locationName.toLowerCase() !== "online") {
+      if (locationName.toLowerCase() !== "online" && upgradedRocketName !== "Zjawisko astronomiczne") {
         streamHolder.append(mapIcon);
       }
       info.append(missionNameElement, rocketNameElement);
