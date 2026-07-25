@@ -212,7 +212,7 @@ function fetchData() {
           net: e.date,
           image: e.feature_image,
           mission: { name: e.name },
-          rocket: { configuration: { name: e.type ? e.type.name : "Wydarzenie" } },
+          rocket: { configuration: { name: e.type ? e.type.name : "Event" } },
           pad: { location: { name: e.location ? e.location : "Nieznana lokalizacja" } },
           status: { name: "Go for Launch" },
           vidURLs: e.vidURLs || (e.video_url ? [{ url: e.video_url }] : [])
@@ -246,9 +246,12 @@ function createLaunchBackground(status, image) {
     "CZĘŚCIOWA PORAŻKA": "rgba(243, 156, 18, 0.45)",
     "START WSTRZYMANY": "rgba(241, 196, 15, 0.45)",
     "Lot w trakcie": "rgba(52, 152, 219, 0.45)",
+    "Event w trakcie": "rgba(52, 152, 219, 0.45)",
     "DATA POTWIERDZONA": "rgba(185, 103, 225, 0.45)",
     "DO POTWIERDZENIA": "rgba(155, 89, 182, 0.45)",
-    "DO USTALENIA": "rgba(142, 68, 173, 0.45)"
+    "DO USTALENIA": "rgba(142, 68, 173, 0.45)",
+    "Lot zakończony": "rgba(149, 165, 166, 0.45)",
+    "Event zakończony": "rgba(149, 165, 166, 0.45)"
   };
 
   const backgroundColor = gradientMap[status] || "rgba(157, 80, 187, 0.60)";
@@ -308,12 +311,19 @@ function updateCountdown(cardState) {
   const timeSinceLaunch = hasValidLaunchTime ? now - launchTime : 0;
   const isLaunchTimePassed = hasValidLaunchTime && timeSinceLaunch >= 0;
   const isApiInFlight = apiStatus === "Launch in Flight";
-  const shouldShowInFlight = hasValidLaunchTime && (isApiInFlight || (!isTerminalStatus && isLaunchTimePassed && timeSinceLaunch <= flightInProgressThresholdMs));
+  
+  const inProgressThreshold = cardState.result.isEvent ? (2 * 60 * 60 * 1000) : flightInProgressThresholdMs;
+  
+  const shouldShowInProgress = hasValidLaunchTime && (isApiInFlight || (!isTerminalStatus && isLaunchTimePassed && timeSinceLaunch <= inProgressThreshold));
+  
+  const isAutomaticallyEnded = hasValidLaunchTime && !isTerminalStatus && isLaunchTimePassed && timeSinceLaunch > inProgressThreshold;
 
   let displayStatus = translatedStatus || cardState.status;
 
-  if (shouldShowInFlight) {
-    displayStatus = "Lot w trakcie";
+  if (shouldShowInProgress) {
+    displayStatus = cardState.result.isEvent ? "Event w trakcie" : "Lot w trakcie";
+  } else if (isAutomaticallyEnded) {
+    displayStatus = cardState.result.isEvent ? "Event zakończony" : "Lot zakończony";
   }
 
   const timeRemaining = isLaunchTimePassed ? 0 : Math.max(0, launchTime - now);
@@ -328,8 +338,9 @@ function updateCountdown(cardState) {
     countdownText = cardState.result.isEvent ? `Event za ${days} dni` : `Start za ${days} dni`;
   }
 
-  if (isApiInFlight || displayStatus === "Lot w trakcie") {
-    countdownText = "Lot w trakcie";
+  const overrideStatuses = ["Lot w trakcie", "Event w trakcie", "Lot zakończony", "Event zakończony"];
+  if (overrideStatuses.includes(displayStatus) || isTerminalStatus) {
+    countdownText = displayStatus;
   } else if (displayStatus !== "DATA POTWIERDZONA") {
     countdownText = displayStatus;
   }
