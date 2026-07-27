@@ -74,6 +74,7 @@ const RocketMap = {
   "Spacecraft Landing": "Powrót na Ziemię",
   "Celestial Event": "Zjawisko astronomiczne",
   "Static Fire": "Test static fire",
+  "EVA": "Spacer kosmiczny",
   "Mir": "GYŪB",
 };
 
@@ -156,7 +157,8 @@ const poprawaMisji = (missionName) => {
     .replace(/\s+Landing/gi, "")
     .replace(/\s+Pre-Launch/gi, "")
     .replace(/\s+(?:Mission\s+Overview|Crew)?\s*(?:News\s+Conference|Press\s+Conference|Media\s+Briefing)/gi, "")
-    .replace(/\s+(?:Pre|Post)-Launch\s+(?:Media\s+Briefing|Press\s+Conference|Briefing)/gi, "");
+    .replace(/\s+(?:Pre|Post)-Launch\s+(?:Media\s+Briefing|Press\s+Conference|Briefing)/gi, "")
+    .replace(/(?:([A-Za-z]+)\s+)?EVA-(\d+(?:\/\d+)*)\s+Preview/gi, "$1 EVA $2")
 
   const match = updated.match(/Dragon CRS-2 SpX-(\d+)/);
   let finalName = match ? `CRS-${match[1]}` : updated;
