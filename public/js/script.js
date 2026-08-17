@@ -28,6 +28,7 @@ const MissionReplacements = {
   "Vostochny Angara Test Flight": "Angara Test Flight",
   "Space Mission": "",
   "CST-100 Starliner Crewed Flight Test": "Boeing Crewed Flight Test",
+  "Nancy Grace Roman Space Telescope": "Kosmiczny Teleskop Nancy Grace Roman",
 };
 
 const CelestialReplacements = {
