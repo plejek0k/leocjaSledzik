@@ -56,6 +56,7 @@ const CelestialReplacements = {
 
 const EventIconMap = {
   "Dokowanie": "las la-satellite",
+  "Spacer kosmiczny": "las la-satellite",
   "Odłączenie statku": "las la-satellite",
   "Zmiana dowództwa": "las la-satellite",
   "Ceremonia pożegnalna": "las la-satellite",
@@ -77,6 +78,7 @@ const RocketMap = {
   "Static Fire": "Test static fire",
   "EVA": "Spacer kosmiczny",
   "Mir": "GYŪB",
+  "Rollout": "Wyjazd",
 };
 
 const RocketLocationOverrideMap = {
@@ -160,6 +162,8 @@ const poprawaMisji = (missionName) => {
     .replace(/\s+(?:Mission\s+Overview|Crew)?\s*(?:News\s+Conference|Press\s+Conference|Media\s+Briefing)/gi, "")
     .replace(/\s+(?:Pre|Post)-Launch\s+(?:Media\s+Briefing|Press\s+Conference|Briefing)/gi, "")
     .replace(/(?:([A-Za-z]+)\s+)?EVA-(\d+(?:\/\d+)*)\s+Preview/gi, "$1 EVA $2")
+    .replace(/\b(\d+)\s+satellites\b/gi, "$1 satelitów")
+    .replace(/\bBooster\s+(\d+)\s+Rollout\s+to\s+the\s+Launch\s+Site\b/gi, "Boostera $1 do placówki startowej")
 
   const match = updated.match(/Dragon CRS-2 SpX-(\d+)/);
   let finalName = match ? `CRS-${match[1]}` : updated;
