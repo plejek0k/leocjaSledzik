@@ -38,7 +38,7 @@ const cardsConfig = [
 { title: `w ${currentYear} roku`, category: "Starty", value: `${stats.attemptsYear} lotów`, bgUrl: "./public/img/stats/2.webp" },
 
 { title: "Udane orbity", category: "Historyczne", value: `${stats.totalOrbit} lotów`, bgUrl: "./public/img/stats/3.webp" },
-{ title: `w ${currentYear}`, category: "Udane orbity", value: `${stats.orbitYear} lotów`, bgUrl: "./public/img/stats/4.webp" },
+{ title: `w ${currentYear} roku`, category: "Udane orbity", value: `${stats.orbitYear} lotów`, bgUrl: "./public/img/stats/4.webp" },
 
 { title: `Startów w ${currentYear}`, category: "Najwięcej", value: stats.countryYear, bgUrl: "./public/img/stats/5.webp" },
 ];

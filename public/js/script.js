@@ -22,16 +22,16 @@ const LaunchLocationMap = {
   "International Space Station": "Międzynarodowa Stacja Kosmiczna",
 };
 
-const MissionReplacements = {
+const misjaZastap = {
   "Unknown Payload": "Ładunek nieznany",
   "Demo Flight": "Lot demonstracyjny",
   "Vostochny Angara Test Flight": "Angara Test Flight",
   "Space Mission": "",
   "CST-100 Starliner Crewed Flight Test": "Boeing Crewed Flight Test",
   "Nancy Grace Roman Space Telescope": "Kosmiczny Teleskop Nancy Grace Roman",
-};
+  };
 
-const CelestialReplacements = {
+const zacmienieZastap = {
   types: {
     "Total": "Całkowite",
     "Partial": "Częściowe",
@@ -54,18 +54,20 @@ const CelestialReplacements = {
   }
 };
 
-const EventIconMap = {
+const ikonaEvent = {
   "Dokowanie": "las la-satellite",
   "Spacer kosmiczny": "las la-satellite",
   "Odłączenie statku": "las la-satellite",
   "Zmiana dowództwa": "las la-satellite",
   "Ceremonia pożegnalna": "las la-satellite",
+  "Przelot obok Ziemi": "las la-globe-africa",
 };
 
-const RocketMap = {
+const rakietaZastap = {
   "Smart Dragon 1": "Jielong 1",
   "Smart Dragon 2": "Jielong 2",
   "Smart Dragon 3": "Jielong 3",
+
   "Docking": "Dokowanie",
   "Spacecraft Undocking": "Odłączenie statku",
   "Spacewalk": "Spacer kosmiczny",
@@ -81,11 +83,11 @@ const RocketMap = {
   "Rollout": "Wyjazd",
 };
 
-const RocketLocationOverrideMap = {
+const rocketLocationZastap = {
   "GYŪB": "Anheung Proving Ground",
 }
 
-const CustomStreamMap = {
+const streamZastap = {
   "Flight 13": "https://www.youtube.com/watch?v=4WzjGAX42Jc",
 };
 
@@ -98,7 +100,7 @@ let isFetching = false;
 let launchResults = [];
 
 const renameRocket = (name) => {
-  let renamed = mapValue(RocketMap, name).replace(/Long March (\d+)/g, "Chang Zheng $1");
+  let renamed = mapValue(rakietaZastap, name).replace(/Long March (\d+)/g, "Chang Zheng $1");
   return renamed.replace(/\bSoyuz\b/gi, "Sojuz");
 };
 
@@ -110,12 +112,12 @@ const poprawaMisji = (missionName) => {
     (match, type, eventName, loc) => {
       let result = [];
       
-      if (type && CelestialReplacements.types[type]) {
-        result.push(CelestialReplacements.types[type]);
+      if (type && zacmienieZastap.types[type]) {
+        result.push(zacmienieZastap.types[type]);
       }
       
-      if (eventName && CelestialReplacements.events[eventName]) {
-        let translatedEvent = CelestialReplacements.events[eventName];
+      if (eventName && zacmienieZastap.events[eventName]) {
+        let translatedEvent = zacmienieZastap.events[eventName];
         if (!type) {
           translatedEvent = translatedEvent.charAt(0).toUpperCase() + translatedEvent.slice(1);
         }
@@ -124,8 +126,8 @@ const poprawaMisji = (missionName) => {
       
       if (loc) {
         let cleanLoc = loc.trim();
-        if (CelestialReplacements.locations[cleanLoc]) {
-          result.push(`w ${CelestialReplacements.locations[cleanLoc]}`);
+        if (zacmienieZastap.locations[cleanLoc]) {
+          result.push(`w ${zacmienieZastap.locations[cleanLoc]}`);
         } else {
           result.push(`w ${cleanLoc}`);
         }
@@ -135,7 +137,7 @@ const poprawaMisji = (missionName) => {
     }
   );
 
-  updated = Object.entries(MissionReplacements).reduce(
+  updated = Object.entries(misjaZastap).reduce(
     (acc, [key, value]) => acc.replace(new RegExp(key, "g"), value),
     updated
   );
@@ -164,13 +166,35 @@ const poprawaMisji = (missionName) => {
     .replace(/(?:([A-Za-z]+)\s+)?EVA-(\d+(?:\/\d+)*)\s+Preview/gi, "$1 EVA $2")
     .replace(/\b(\d+)\s+satellites\b/gi, "$1 satelitów")
     .replace(/\bBooster\s+(\d+)\s+Rollout\s+to\s+the\s+Launch\s+Site\b/gi, "Boostera $1 do placówki startowej")
+    .replace(/^(.+?)\s+\S+\s+Flyby$/i, "$1")
+    .replace(/\bto\b(?=\s+\d+\b)/gi, "do")
+    .replace(/\s*&\s*Others\b/gi, " i inne");
 
-  const match = updated.match(/Dragon CRS-2 SpX-(\d+)/);
+  const match = updated.match(/(?:Dragon\s+CRS-2\s+)?SpX-(\d+)/);
   let finalName = match ? `CRS-${match[1]}` : updated;
   return finalName.replace(/\s+/g, " ").trim();
 };
 
-const removeTextAfterSlash = (text) => text.split("/")[0];
+const translateEventName = (type, location) => {
+  if (type?.toLowerCase() === "flyby" && location) {
+    const body = {
+      Earth: "Ziemi",
+      Moon: "Księżyca",
+      Mercury: "Merkurego",
+      Venus: "Wenus",
+      Mars: "Marsa",
+      Jupiter: "Jowisza",
+      Saturn: "Saturna",
+      Uranus: "Urana",
+      Neptune: "Neptuna"
+    };
+
+    return `Przelot obok ${body[location] || location}`;
+  }
+  return type || "Event";
+};
+
+const textSlashRem = (text) => text.split("/")[0];
 
 const getStatusAbbreviation = (status) => mapValue(StatusMap, status);
 const translateLaunch = (location) => mapValue(LaunchLocationMap, location);
@@ -182,16 +206,27 @@ function fetchData() {
   }
 
   isFetching = true;
-  const cachedData = localStorage.getItem("cachedData");
-  const cachedTimestamp = localStorage.getItem("cachedTimestamp");
-  const currentTime = new Date().getTime();
+  const cacheKey = "cachedDataV2";
+  const timestampKey = "cachedTimestampV2";
+  const cachedData = localStorage.getItem(cacheKey);
+  const cachedTimestamp = localStorage.getItem(timestampKey);
+  const currentTime = Date.now();
 
-  if (cachedData && cachedTimestamp && currentTime - Number(cachedTimestamp) <= 15 * 60 * 1000) {
-    const parsed = JSON.parse(cachedData);
-    launchResults = parsed.results || parsed;
-    displayLaunchData(launchResults);
-    isFetching = false;
-    return;
+  if (cachedData && cachedTimestamp && currentTime - Number(cachedTimestamp) <= 10 * 60 * 1000) {
+    try {
+      const parsed = JSON.parse(cachedData);
+      launchResults = parsed.results || parsed;
+
+      if (Array.isArray(launchResults) && launchResults.length > 0) {
+        displayLaunchData(launchResults);
+        isFetching = false;
+        return;
+      }
+    } catch (error) {
+      console.error(error);
+      localStorage.removeItem(cacheKey);
+      localStorage.removeItem(timestampKey);
+    }
   }
 
   NProgress.start();
@@ -219,7 +254,7 @@ function fetchData() {
           net: e.date,
           image: e.feature_image,
           mission: { name: e.name },
-          rocket: { configuration: { name: e.type ? e.type.name : "Event" } },
+          rocket: { configuration: { name: e.type ? e.type.name : "Event" }},
           pad: { location: { name: e.location ? e.location : "Nieznana lokalizacja" } },
           status: { name: "Go for Launch" },
           vidURLs: e.vidURLs || (e.video_url ? [{ url: e.video_url }] : [])
@@ -227,8 +262,8 @@ function fetchData() {
 
       const combinedResults = [...launches, ...normalizedEvents];
 
-      localStorage.setItem("cachedData", JSON.stringify({ results: combinedResults }));
-      localStorage.setItem("cachedTimestamp", String(currentTime));
+      localStorage.setItem("cachedDataV2", JSON.stringify({ results: combinedResults }));
+      localStorage.setItem("cachedTimestampV2", String(Date.now()));
       launchResults = combinedResults;
       displayLaunchData(launchResults);
     })
@@ -275,6 +310,7 @@ function createWikipediaLink(name, type) {
       "H3-22": "https://en.wikipedia.org/wiki/H3_(rocket)",
       "Spectrum": "https://en.wikipedia.org/wiki/Isar_Aerospace_Spectrum",
       "GYŪB": "https://en.wikipedia.org/wiki/Solid-fuel_space_launch_vehicle",
+      "SR75": "https://en.wikipedia.org/wiki/HyImpulse",
     },
     location: {
       "Start w powietrzu": "https://en.wikipedia.org/wiki/Air_launch",
@@ -423,28 +459,46 @@ function displayLaunchData(results) {
   launchCards.length = 0;
 
   results
-    .filter((result) => result.mission)
+    .filter((result) => result && result.net)
     .sort((a, b) => new Date(a.net) - new Date(b.net))
     .forEach((result) => {
       const launchElement = document.createElement("article");
       launchElement.className = "start";
 
-      const rocketName = removeTextAfterSlash(result.rocket.configuration.name);
+      let rocketName = textSlashRem(result.rocket.configuration.name);
+
+      if (result.isEvent) {
+        rocketName = translateEventName(
+          rocketName,
+          result.pad?.location?.name
+        );
+      }
+
       const upgradedRocketName = getRocketReplacement(rocketName);
-      const missionName = poprawaMisji(result.mission.name);
+      let missionName = poprawaMisji(result.mission?.name || result.name || "nie ustalono");
+
+      if (result.isEvent && upgradedRocketName === "Dokowanie") {
+        const crewMatch = missionName.match(/Crew-(\d+)/i);
+
+        if (crewMatch) {
+          missionName = `Crew-${crewMatch[1]}`;
+        }
+      }
+
+
       const status = getStatusAbbreviation(result.status.name);
       let locationName = translateLaunch(result.pad.location.name.split(",")[0]);
 
-      if (RocketLocationOverrideMap[upgradedRocketName]) {
-        locationName = RocketLocationOverrideMap[upgradedRocketName];
-      } else if (RocketLocationOverrideMap[rocketName]) {
-        locationName = RocketLocationOverrideMap[rocketName];
+      if (rocketLocationZastap[upgradedRocketName]) {
+        locationName = rocketLocationZastap[upgradedRocketName];
+      } else if (rocketLocationZastap[rocketName]) {
+        locationName = rocketLocationZastap[rocketName];
       }      
 
       launchElement.style.backgroundImage = createLaunchBackground(status, result.image);
 
       const apiStreamUrl = result.vidURLs && result.vidURLs.length > 0 ? result.vidURLs[0].url : null;
-      const streamUrl = CustomStreamMap[missionName] || CustomStreamMap[result.mission.name] || apiStreamUrl;
+      const streamUrl = streamZastap[missionName] || streamZastap[result.mission.name] || apiStreamUrl;
 
       if (streamUrl) {
         launchElement.classList.add("has-stream");
@@ -479,7 +533,7 @@ function displayLaunchData(results) {
 
       let locationIconClass = "las la-map-marked-alt";
       if (result.isEvent) {
-        locationIconClass = EventIconMap[upgradedRocketName] || "las la-map-marked-alt";
+        locationIconClass = ikonaEvent[upgradedRocketName] || "las la-map-marked-alt";
       }
 
       const mapIcon = createWikipediaIcon(locationIconClass, locationName, "location");
