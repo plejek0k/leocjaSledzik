@@ -11,7 +11,7 @@ const StatusMap = {
   "Launch in Flight": "Lot w trakcie",
 };
 
-const LaunchLocationMap = {
+const LocationMap = {
   "Air launch to Suborbital flight": "Start w powietrzu",
   "SpaceX Space Launch Facility": "SpaceX Starbase",
   "Vandenberg SFB": "Vandenberg Space Force Base",
@@ -22,7 +22,7 @@ const LaunchLocationMap = {
   "International Space Station": "Międzynarodowa Stacja Kosmiczna",
 };
 
-const MissionReplacements = {
+const MissionReplace = {
   "Unknown Payload": "Ładunek nieznany",
   "Demo Flight": "Lot demonstracyjny",
   "Vostochny Angara Test Flight": "Angara Test Flight",
@@ -31,7 +31,7 @@ const MissionReplacements = {
   "Nancy Grace Roman Space Telescope": "Kosmiczny Teleskop Nancy Grace Roman",
 };
 
-const CelestialReplacements = {
+const PlanetReplace = {
   types: {
     "Total": "Całkowite",
     "Partial": "Częściowe",
@@ -64,7 +64,7 @@ const PlanetMap = {
   "Saturn": "Saturna"
 };
 
-const EventIconMap = {
+const EventIcon = {
   "Dokowanie": "las la-satellite",
   "Spacer kosmiczny": "las la-satellite",
   "Odłączenie statku": "las la-satellite",
@@ -92,11 +92,11 @@ const RocketMap = {
   "Rollout": "Wyjazd",
 };
 
-const RocketLocationOverrideMap = {
+const RocketReplace = {
   "GYŪB": "Anheung Proving Ground",
 };
 
-const CustomStreamMap = {
+const StreamReplace = {
   "Flight 13": "https://www.youtube.com/watch?v=4WzjGAX42Jc",
 };
 
@@ -115,29 +115,27 @@ const renameRocket = (name) => {
 
 const poprawaMisji = (missionName) => {
   let updated = missionName.replace(/\(([^)]+)\)/g, "");
-
-  // Usuwamy "[Ciało] Flyby" z nazwy misji, np. "Juice Earth Flyby" -> "Juice"
   updated = updated.replace(/\s+[A-Za-z]+\s+Flyby/gi, "");
 
   updated = updated.replace(
     /\b(Total|Partial|Annular|Penumbral)?\s*(Solar Eclipse|Lunar Eclipse|Meteor Shower)(?:\s+in\s+([a-zA-Z\s]+))?/i,
     (match, type, eventName, loc) => {
       let result = [];
-      if (type && CelestialReplacements.types[type]) result.push(CelestialReplacements.types[type]);
-      if (eventName && CelestialReplacements.events[eventName]) {
-        let translatedEvent = CelestialReplacements.events[eventName];
+      if (type && PlanetReplace.types[type]) result.push(PlanetReplace.types[type]);
+      if (eventName && PlanetReplace.events[eventName]) {
+        let translatedEvent = PlanetReplace.events[eventName];
         if (!type) translatedEvent = translatedEvent.charAt(0).toUpperCase() + translatedEvent.slice(1);
         result.push(translatedEvent);
       }
       if (loc) {
         let cleanLoc = loc.trim();
-        result.push(`w ${CelestialReplacements.locations[cleanLoc] || cleanLoc}`);
+        result.push(`w ${PlanetReplace.locations[cleanLoc] || cleanLoc}`);
       }
       return result.join(" ");
     }
   );
 
-  updated = Object.entries(MissionReplacements).reduce(
+  updated = Object.entries(MissionReplace).reduce(
     (acc, [key, value]) => acc.replace(new RegExp(key, "g"), value),
     updated
   );
@@ -177,7 +175,7 @@ const poprawaMisji = (missionName) => {
 const removeTextAfterSlash = (text) => text.split("/")[0];
 
 const getStatusAbbreviation = (status) => mapValue(StatusMap, status);
-const translateLaunch = (location) => mapValue(LaunchLocationMap, location);
+const translateLaunch = (location) => mapValue(LocationMap, location);
 const getRocketReplacement = (rocket) => renameRocket(rocket);
 
 function fetchData() {
@@ -450,16 +448,16 @@ function displayLaunchData(results) {
       const status = getStatusAbbreviation(result.status.name);
       let locationName = translateLaunch(result.pad.location.name.split(",")[0]);
 
-      if (RocketLocationOverrideMap[upgradedRocketName]) {
-        locationName = RocketLocationOverrideMap[upgradedRocketName];
-      } else if (RocketLocationOverrideMap[rocketName]) {
-        locationName = RocketLocationOverrideMap[rocketName];
+      if (RocketReplace[upgradedRocketName]) {
+        locationName = RocketReplace[upgradedRocketName];
+      } else if (RocketReplace[rocketName]) {
+        locationName = RocketReplace[rocketName];
       }      
 
       launchElement.style.backgroundImage = createLaunchBackground(status, result.image);
 
       const apiStreamUrl = result.vidURLs && result.vidURLs.length > 0 ? result.vidURLs[0].url : null;
-      const streamUrl = CustomStreamMap[missionName] || CustomStreamMap[result.mission.name] || apiStreamUrl;
+      const streamUrl = StreamReplace[missionName] || StreamReplace[result.mission.name] || apiStreamUrl;
 
       if (streamUrl) {
         launchElement.classList.add("has-stream");
@@ -494,7 +492,7 @@ function displayLaunchData(results) {
 
       let locationIconClass = "las la-map-marked-alt";
       if (result.isEvent) {
-        locationIconClass = EventIconMap[upgradedRocketName] || "las la-map-marked-alt";
+        locationIconClass = EventIcon[upgradedRocketName] || "las la-map-marked-alt";
       }
 
       const mapIcon = createWikipediaIcon(locationIconClass, locationName, "location");
