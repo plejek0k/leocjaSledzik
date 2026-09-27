@@ -70,7 +70,9 @@ const EventIcon = {
   "Odłączenie statku": "las la-satellite",
   "Zmiana dowództwa": "las la-satellite",
   "Ceremonia pożegnalna": "las la-satellite",
-  "Konferencja prasowa": "las la-bullhorn"
+  "Konferencja prasowa": "las la-map-marked-alt",
+  "Przelot obok Ziemi": "las la-globe-europe",
+
 };
 
 const RocketMap = {
@@ -499,7 +501,7 @@ function displayLaunchData(results) {
       mapIcon.id = "map";
 
       const starIcon = document.createElement("a");
-      starIcon.className = "lar la-star";
+      starIcon.className = "lar la-heart";
       starIcon.id = "starIcon";
 
       tippy(starIcon, {
