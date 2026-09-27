@@ -54,12 +54,23 @@ const CelestialReplacements = {
   }
 };
 
+const PlanetMap = {
+  "Earth": "Ziemi",
+  "Moon": "Księżyca",
+  "Mars": "Marsa",
+  "Venus": "Wenus",
+  "Mercury": "Merkurego",
+  "Jupiter": "Jowisza",
+  "Saturn": "Saturna"
+};
+
 const EventIconMap = {
   "Dokowanie": "las la-satellite",
   "Spacer kosmiczny": "las la-satellite",
   "Odłączenie statku": "las la-satellite",
   "Zmiana dowództwa": "las la-satellite",
   "Ceremonia pożegnalna": "las la-satellite",
+  "Konferencja prasowa": "las la-bullhorn"
 };
 
 const RocketMap = {
@@ -83,7 +94,7 @@ const RocketMap = {
 
 const RocketLocationOverrideMap = {
   "GYŪB": "Anheung Proving Ground",
-}
+};
 
 const CustomStreamMap = {
   "Flight 13": "https://www.youtube.com/watch?v=4WzjGAX42Jc",
@@ -105,32 +116,23 @@ const renameRocket = (name) => {
 const poprawaMisji = (missionName) => {
   let updated = missionName.replace(/\(([^)]+)\)/g, "");
 
+  // Usuwamy "[Ciało] Flyby" z nazwy misji, np. "Juice Earth Flyby" -> "Juice"
+  updated = updated.replace(/\s+[A-Za-z]+\s+Flyby/gi, "");
+
   updated = updated.replace(
     /\b(Total|Partial|Annular|Penumbral)?\s*(Solar Eclipse|Lunar Eclipse|Meteor Shower)(?:\s+in\s+([a-zA-Z\s]+))?/i,
     (match, type, eventName, loc) => {
       let result = [];
-      
-      if (type && CelestialReplacements.types[type]) {
-        result.push(CelestialReplacements.types[type]);
-      }
-      
+      if (type && CelestialReplacements.types[type]) result.push(CelestialReplacements.types[type]);
       if (eventName && CelestialReplacements.events[eventName]) {
         let translatedEvent = CelestialReplacements.events[eventName];
-        if (!type) {
-          translatedEvent = translatedEvent.charAt(0).toUpperCase() + translatedEvent.slice(1);
-        }
+        if (!type) translatedEvent = translatedEvent.charAt(0).toUpperCase() + translatedEvent.slice(1);
         result.push(translatedEvent);
       }
-      
       if (loc) {
         let cleanLoc = loc.trim();
-        if (CelestialReplacements.locations[cleanLoc]) {
-          result.push(`w ${CelestialReplacements.locations[cleanLoc]}`);
-        } else {
-          result.push(`w ${cleanLoc}`);
-        }
+        result.push(`w ${CelestialReplacements.locations[cleanLoc] || cleanLoc}`);
       }
-      
       return result.join(" ");
     }
   );
@@ -142,7 +144,8 @@ const poprawaMisji = (missionName) => {
 
   updated = updated
     .replace(/\bCRS-\d+\b/g, "")
-    .replace(/nk\b Group/g, "nk Grupa")
+    .replace(/(?:SpaceX\s+)?Crew\s*Dragon\s+Crew-(\d+)|(?:SpaceX\s+)?Crew-(\d+)(?:\s+Crew\s+Dragon)?/gi, (m, p1, p2) => `Crew-${p1 || p2}`)
+    .replace(/Starlink\s+Group/gi, "Starlink Grupa")
     .replace(/Integrated Flight Test (\d+)/g, "Starship Flight Test $1")
     .replace(/Flight (\d+)/g, "Flight $1")
     .replace(/FLTA\d+\s*/, "")
@@ -164,6 +167,7 @@ const poprawaMisji = (missionName) => {
     .replace(/(?:([A-Za-z]+)\s+)?EVA-(\d+(?:\/\d+)*)\s+Preview/gi, "$1 EVA $2")
     .replace(/\b(\d+)\s+satellites\b/gi, "$1 satelitów")
     .replace(/\bBooster\s+(\d+)\s+Rollout\s+to\s+the\s+Launch\s+Site\b/gi, "Boostera $1 do placówki startowej")
+    .replace(/(?:International\s+Space\s+Station|ISS)(?:\s+[A-Za-z]+)*?\s+(?:Teleconference|News\s+Conference|Press\s+Conference|Media\s+Briefing|Briefing)/gi, "Międzynarodowa Stacja Kosmiczna");
 
   const match = updated.match(/Dragon CRS-2 SpX-(\d+)/);
   let finalName = match ? `CRS-${match[1]}` : updated;
@@ -420,18 +424,29 @@ function displayLaunchData(results) {
   const appDiv = document.getElementById("app");
   const fragment = document.createDocumentFragment();
 
+  launchCards.forEach(card => {
+    if (card.tooltip) card.tooltip.destroy();
+  });
   launchCards.length = 0;
 
   results
     .filter((result) => result.mission)
     .sort((a, b) => new Date(a.net) - new Date(b.net))
     .forEach((result) => {
+      let flybyText = null;
+      const flybyMatch = result.mission.name.match(/(.+?)\s+([A-Za-z]+)\s+Flyby/i);
+      if (flybyMatch) {
+        const planetEn = flybyMatch[2];
+        const planetPl = PlanetMap[planetEn] || planetEn;
+        flybyText = `Przelot obok ${planetPl}`;
+      }
       const launchElement = document.createElement("article");
       launchElement.className = "start";
 
       const rocketName = removeTextAfterSlash(result.rocket.configuration.name);
-      const upgradedRocketName = getRocketReplacement(rocketName);
+      const upgradedRocketName = flybyText || getRocketReplacement(rocketName);
       const missionName = poprawaMisji(result.mission.name);
+
       const status = getStatusAbbreviation(result.status.name);
       let locationName = translateLaunch(result.pad.location.name.split(",")[0]);
 
