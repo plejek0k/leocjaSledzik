@@ -129,16 +129,26 @@ const poprawaMisji = (missionName) => {
     /\b(Total|Partial|Annular|Penumbral)?\s*(Solar Eclipse|Lunar Eclipse|Meteor Shower)(?:\s+in\s+([a-zA-Z\s]+))?/i,
     (match, type, eventName, loc) => {
       let result = [];
-      if (type && PlanetReplace.types[type]) result.push(PlanetReplace.types[type]);
+
+      if (type && PlanetReplace.types[type]) {
+        result.push(PlanetReplace.types[type]);
+      }
+
       if (eventName && PlanetReplace.events[eventName]) {
         let translatedEvent = PlanetReplace.events[eventName];
-        if (!type) translatedEvent = translatedEvent.charAt(0).toUpperCase() + translatedEvent.slice(1);
+
+        if (!type) {
+          translatedEvent = translatedEvent.charAt(0).toUpperCase() + translatedEvent.slice(1);
+        }
+
         result.push(translatedEvent);
       }
+
       if (loc) {
-        let cleanLoc = loc.trim();
+        const cleanLoc = loc.trim();
         result.push(`w ${PlanetReplace.locations[cleanLoc] || cleanLoc}`);
       }
+
       return result.join(" ");
     }
   );
@@ -149,8 +159,7 @@ const poprawaMisji = (missionName) => {
   );
 
   updated = updated
-    .replace(/\bCRS-\d+\b/g, "")
-    .replace(/(?:SpaceX\s+)?Crew\s*Dragon\s+Crew-(\d+)|(?:SpaceX\s+)?Crew-(\d+)(?:\s+Crew\s+Dragon)?/gi, (m, p1, p2) => `Crew-${p1 || p2}`)
+    .replace(/Dragon\s+(?:CRS-2\s+)?SpX-(\d+)/gi, "CRS-$1")
     .replace(/Starlink\s+Group/gi, "Starlink Grupa")
     .replace(/Integrated Flight Test (\d+)/g, "Starship Flight Test $1")
     .replace(/Flight (\d+)/g, "Flight $1")
@@ -166,6 +175,8 @@ const poprawaMisji = (missionName) => {
     .replace(/\d+\s*x\s*Rassvet-3/gi, "satelity Rassvet-3")
     .replace(/(?:ISS\s+)?Expedition\s+(\d+(?:-\d+)?)(?:\s+Change of Command Ceremony)?/gi, "Ekspedycja $1")
     .replace(/\s+Farewell\s+Ceremony/gi, "")
+    .replace(/SpaceX CRS-(\d+) Dragon/g, "CRS-$1")
+    .replace(/SpaceX Crew-(\d+) Crew Dragon/g, "Crew-$1")
     .replace(/\s+Landing/gi, "")
     .replace(/\s+Pre-Launch/gi, "")
     .replace(/\s+Hatch Closure/gi, "")
@@ -178,9 +189,7 @@ const poprawaMisji = (missionName) => {
     .replace(/\bBooster\s+(\d+)\s+Rollout\s+to\s+the\s+Launch\s+Site\b/gi, "Boostera $1 do placówki startowej")
     .replace(/(?:International\s+Space\s+Station|ISS)(?:\s+[A-Za-z]+)*?\s+(?:Teleconference|News\s+Conference|Press\s+Conference|Media\s+Briefing|Briefing)/gi, "Międzynarodowa Stacja Kosmiczna");
 
-  const match = updated.match(/Dragon CRS-2 SpX-(\d+)/);
-  let finalName = match ? `CRS-${match[1]}` : updated;
-  return finalName.replace(/\s+/g, " ").trim();
+  return updated.replace(/\s+/g, " ").trim();
 };
 
 const removeTextAfterSlash = (text) => text.split("/")[0];
