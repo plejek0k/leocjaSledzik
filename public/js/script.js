@@ -18,8 +18,10 @@ const LocationMap = {
   "Onenui Station": "Rocket Lab Launch Complex 1",
   "Wallops Island": "Mid-Atlantic Regional Spaceport",
   "Cape Canaveral": "Cape Canaveral Space Force Station",
+  "Cape Canaveral SFS": "Cape Canaveral Space Force Station",
   "Pacific Spaceport Complex": "Pacific Spaceport Complex – Alaska",
   "International Space Station": "Międzynarodowa Stacja Kosmiczna",
+  "Pacific Ocean": "Ocean Spokojny",
 };
 
 const MissionReplace = {
@@ -70,9 +72,11 @@ const EventIcon = {
   "Odłączenie statku": "las la-satellite",
   "Zmiana dowództwa": "las la-satellite",
   "Ceremonia pożegnalna": "las la-satellite",
+  "Zdarzenie misji": "las la-satellite",
   "Konferencja prasowa": "las la-map-marked-alt",
   "Przelot obok Ziemi": "las la-globe-europe",
-
+  "Powrót na Ziemię": "las la-globe-americas",
+  "Wypuszczenie statku": "las la-satellite",
 };
 
 const RocketMap = {
@@ -89,6 +93,8 @@ const RocketMap = {
   "Spacecraft Landing": "Powrót na Ziemię",
   "Celestial Event": "Zjawisko astronomiczne",
   "Static Fire": "Test static fire",
+  "Spacecraft Event": "Zdarzenie misji",
+  "Spacecraft Release": "Wypuszczenie statku",
   "EVA": "Spacer kosmiczny",
   "Mir": "GYŪB",
   "Rollout": "Wyjazd",
@@ -162,6 +168,9 @@ const poprawaMisji = (missionName) => {
     .replace(/\s+Farewell\s+Ceremony/gi, "")
     .replace(/\s+Landing/gi, "")
     .replace(/\s+Pre-Launch/gi, "")
+    .replace(/\s+Hatch Closure/gi, "")
+    .replace(/\s+Splashdown/gi, "")
+    .replace(/\s+Release/gi, "")
     .replace(/\s+(?:Mission\s+Overview|Crew)?\s*(?:News\s+Conference|Press\s+Conference|Media\s+Briefing)/gi, "")
     .replace(/\s+(?:Pre|Post)-Launch\s+(?:Media\s+Briefing|Press\s+Conference|Briefing)/gi, "")
     .replace(/(?:([A-Za-z]+)\s+)?EVA-(\d+(?:\/\d+)*)\s+Preview/gi, "$1 EVA $2")
@@ -283,7 +292,8 @@ function createWikipediaLink(name, type) {
     location: {
       "Start w powietrzu": "https://en.wikipedia.org/wiki/Air_launch",
       "International Space Station": "https://en.wikipedia.org/wiki/International_Space_Station",
-      "Międzynarodowa Stacja Kosmiczna": "https://en.wikipedia.org/wiki/International_Space_Station"
+      "Międzynarodowa Stacja Kosmiczna": "https://en.wikipedia.org/wiki/International_Space_Station",
+      "Ocean Spokojny": "https://en.wikipedia.org/wiki/Pacific_Ocean",
     }
   };
 
